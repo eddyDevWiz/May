@@ -28,30 +28,9 @@
                 from the heart.
             </p>
 
-            <div class="flex gap-4 flex-wrap mb-12">
+            <div class="flex gap-4 flex-wrap">
                 <a href="/shop" class="btn btn-primary btn-lg">Browse Collection</a>
                 <a href="/about" class="btn btn-outline btn-lg">Meet May</a>
-            </div>
-
-            <!-- Stats -->
-            <div class="flex items-center gap-6">
-                {
-                    [
-                        { number: '200+', label: 'Unique pieces' },
-                        { number: '500+', label: 'Happy clients' },
-                        { number: '5★', label: 'Rating' }
-                    ].map(({ number, label }, i) => (
-                        <>
-                            {i > 0 && <div class="w-px h-9 bg-neutral-200" aria-hidden="true" />}
-                            <div class="flex flex-col">
-                                <span class="font-heading text-2xl font-bold text-neutral-800 leading-none">
-                                    {number}
-                                </span>
-                                <span class="text-xs text-neutral-400 mt-1">{label}</span>
-                            </div>
-                        </>
-                    ))
-                }
             </div>
         </div>
 
