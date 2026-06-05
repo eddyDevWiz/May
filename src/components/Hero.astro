@@ -1,0 +1,120 @@
+---
+
+---
+
+<section class="relative min-h-[calc(100vh-72px)] flex flex-col justify-center overflow-hidden bg-cream px-14">
+    <!-- Background blobs -->
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-pink opacity-30 blur-[80px]"></div>
+        <div class="absolute -bottom-28 -left-28 w-[350px] h-[350px] rounded-full bg-pink-light opacity-25 blur-[80px]">
+        </div>
+    </div>
+
+    <div class="container relative z-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-20">
+        <!-- Text content -->
+        <div class="animate-fade-up">
+            <span
+                class="inline-block bg-pink-bg text-pink text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-6">
+                ✦ 2025 Collection
+            </span>
+
+            <h1 class="text-5xl lg:text-6xl font-heading font-bold text-neutral-800 leading-[1.1] mb-5">
+                Art that <span class="text-pink">inspires</span><br />your space
+            </h1>
+
+            <p class="text-lg text-neutral-500 leading-relaxed max-w-md mb-8">
+                Unique pieces, illustrations and contemporary art handcrafted with love from Colombia. Every artwork
+                tells a story.
+            </p>
+
+            <div class="flex gap-4 flex-wrap mb-12">
+                <a href="/shop" class="btn btn-primary btn-lg">Browse Collection</a>
+                <a href="/about" class="btn btn-outline btn-lg">Meet May</a>
+            </div>
+
+            <!-- Stats -->
+            <div class="flex items-center gap-6">
+                {
+                    [
+                        { number: '200+', label: 'Unique pieces' },
+                        { number: '500+', label: 'Happy clients' },
+                        { number: '5★', label: 'Rating' }
+                    ].map(({ number, label }, i) => (
+                        <>
+                            {i > 0 && <div class="w-px h-9 bg-neutral-200" aria-hidden="true" />}
+                            <div class="flex flex-col">
+                                <span class="font-heading text-2xl font-bold text-neutral-800 leading-none">
+                                    {number}
+                                </span>
+                                <span class="text-xs text-neutral-400 mt-1">{label}</span>
+                            </div>
+                        </>
+                    ))
+                }
+            </div>
+        </div>
+
+        <!-- Image / placeholder -->
+        <div class="flex justify-center animate-fade-up" style="animation-delay: 0.15s">
+            <div class="relative w-full max-w-[420px]">
+                <!-- Main frame -->
+                <div
+                    class="relative rounded-3xl overflow-hidden shadow-[0_24px_64px_rgba(255,70,145,0.2)] aspect-[4/5] bg-pink-bg flex items-center justify-center">
+                    <svg
+                        viewBox="0 0 400 500"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-full h-full"
+                        aria-hidden="true">
+                        <circle cx="200" cy="180" r="90" fill="#ff4691" opacity="0.12"></circle>
+                        <circle cx="200" cy="180" r="60" fill="#ff4691" opacity="0.2"></circle>
+                        <circle cx="200" cy="180" r="30" fill="#ff4691" opacity="0.6"></circle>
+                        <path d="M120 320 Q200 260 280 320 Q200 380 120 320Z" fill="#ff4691" opacity="0.15"></path>
+                        <path
+                            d="M100 350 Q200 280 300 350"
+                            stroke="#ff4691"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            opacity="0.4"></path>
+                        <circle cx="80" cy="100" r="6" fill="#ff4691" opacity="0.4"></circle>
+                        <circle cx="340" cy="150" r="4" fill="#ff4691" opacity="0.3"></circle>
+                        <circle cx="60" cy="380" r="8" fill="#ff4691" opacity="0.2"></circle>
+                        <circle cx="350" cy="420" r="5" fill="#ff4691" opacity="0.35"></circle>
+                    </svg>
+                    <p class="absolute bottom-5 text-pink text-xs font-semibold">Your artwork here</p>
+                </div>
+
+                <!-- Floating badge — top left -->
+                <div
+                    class="absolute top-[10%] -left-5 flex items-center gap-2 bg-white rounded-full px-4 py-2.5 shadow-hover text-sm font-semibold text-neutral-700 animate-float whitespace-nowrap">
+                    <span>🎨</span><span>Original Art</span>
+                </div>
+
+                <!-- Floating badge — bottom right -->
+                <div
+                    class="absolute bottom-[15%] -right-5 flex items-center gap-2 bg-white rounded-full px-4 py-2.5 shadow-hover text-sm font-semibold text-neutral-700 animate-float whitespace-nowrap"
+                    style="animation-delay: 1.5s">
+                    <span>🚚</span><span>Nationwide Shipping</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div
+        class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-1.5 text-neutral-400 text-xs font-medium animate-bounce"
+        aria-hidden="true">
+        <span>Scroll</span>
+        <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    </div>
+</section>

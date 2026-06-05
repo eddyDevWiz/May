@@ -1,0 +1,117 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout
+    title="About — May Garcia"
+    description="Meet May Garcia, Colombian artist specializing in contemporary art and unique illustrations.">
+    <!-- Header -->
+    <div class="bg-gradient-to-br from-pink-bg to-white border-b border-neutral-100 py-12 text-center">
+        <div class="container">
+            <h1 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-2">About Me</h1>
+            <p class="text-neutral-500">Artist, creator, Colombian</p>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="container grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <!-- Image -->
+            <div class="relative max-w-md mx-auto w-full">
+                <div class="rounded-3xl overflow-hidden shadow-[0_24px_64px_rgba(255,70,145,0.18)]">
+                    <div class="aspect-[4/5] bg-pink-bg flex items-center justify-center relative">
+                        <svg viewBox="0 0 400 500" fill="none" class="w-full h-full" aria-hidden="true">
+                            <circle cx="200" cy="170" r="80" fill="#ff4691" opacity="0.15"></circle>
+                            <circle cx="200" cy="160" r="55" fill="#ff4691" opacity="0.25"></circle>
+                            <ellipse cx="200" cy="360" rx="110" ry="80" fill="#ff4691" opacity="0.1"></ellipse>
+                            <circle cx="200" cy="155" r="40" fill="#ff4691" opacity="0.4"></circle>
+                        </svg>
+                        <p class="absolute bottom-5 text-pink text-xs font-semibold">Your photo here</p>
+                    </div>
+                </div>
+
+                <!-- Floating badge -->
+                <div
+                    class="absolute -bottom-5 -right-3 flex items-center gap-3 bg-white rounded-2xl px-5 py-3.5 shadow-hover">
+                    <span class="text-2xl">🎨</span>
+                    <div class="flex flex-col">
+                        <strong class="text-sm font-semibold text-neutral-800">May Garcia</strong>
+                        <small class="text-xs text-neutral-400">Visual Artist</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="py-10">
+                <span class="eyebrow mb-4 block">My story</span>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-6">
+                    Creating art that<br />transforms spaces
+                </h2>
+
+                <p class="text-neutral-500 leading-relaxed mb-4">
+                    I'm May Garcia, a Colombian artist passionate about creating works that connect emotions with
+                    spaces. Every piece I create carries a personal story — a moment captured in color and form.
+                </p>
+
+                <p class="text-neutral-500 leading-relaxed mb-8">
+                    My work combines contemporary techniques with influences from Colombian culture, creating a unique
+                    and recognizable style. I work primarily with acrylics, watercolors and mixed media.
+                </p>
+
+                <!-- Values -->
+                <div class="bg-cream rounded-2xl p-6 flex flex-col gap-5 mb-8">
+                    {
+                        [
+                            {
+                                icon: '🌺',
+                                title: 'Authenticity',
+                                desc: 'Every piece is 100% original, handmade with premium materials.'
+                            },
+                            {
+                                icon: '💡',
+                                title: 'Inspiration',
+                                desc: 'I draw inspiration from nature, emotions and Latin American culture.'
+                            },
+                            {
+                                icon: '🤝',
+                                title: 'Connection',
+                                desc: 'I create art to connect people with emotions and special spaces.'
+                            }
+                        ].map(({ icon, title, desc }) => (
+                            <div class="flex items-start gap-4">
+                                <span class="text-2xl flex-shrink-0 mt-0.5">{icon}</span>
+                                <div>
+                                    <h4 class="font-heading text-sm font-semibold text-neutral-800 mb-1">{title}</h4>
+                                    <p class="text-sm text-neutral-500 leading-relaxed">{desc}</p>
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+
+                <div class="flex gap-4 flex-wrap">
+                    <a href="/shop" class="btn btn-primary btn-lg">View My Work</a>
+                    <a href="/contact" class="btn btn-outline btn-lg">Get in Touch</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="py-14 bg-pink">
+        <div class="container grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            {
+                [
+                    { number: '5+', label: 'Years creating' },
+                    { number: '200+', label: 'Unique pieces' },
+                    { number: '500+', label: 'Happy clients' },
+                    { number: '15+', label: 'Exhibitions' }
+                ].map(({ number, label }) => (
+                    <div class="flex flex-col gap-1">
+                        <span class="font-heading text-4xl font-bold text-white">{number}</span>
+                        <span class="text-sm text-white/75">{label}</span>
+                    </div>
+                ))
+            }
+        </div>
+    </section>
+</Layout>

@@ -1,0 +1,98 @@
+---
+// Redirect /shop to /productos (existing page) or serve directly
+import { getProducts } from '../../lib/shopify'
+import Layout from '../../layouts/Layout.astro'
+import ProductCard from '../../components/ProductCard.astro'
+
+const products = await getProducts(24)
+---
+
+<Layout
+    title="Shop — May Garcia"
+    description="Explore all May Garcia products. Original art, illustrations and unique handmade pieces.">
+    <div class="bg-gradient-to-br from-pink-bg to-white border-b border-neutral-100 py-12 text-center">
+        <div class="container">
+            <h1 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-2">Shop</h1>
+            <p class="text-neutral-500">Discover all available works</p>
+        </div>
+    </div>
+
+    <section class="section flex justify-center">
+        <div class="container">
+            <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
+                <p class="text-sm text-neutral-400">
+                    {products.length}
+                    {products.length === 1 ? 'product' : 'products'}
+                </p>
+                <select
+                    id="sort-select"
+                    aria-label="Sort by"
+                    class="border-2 border-neutral-200 rounded-lg px-4 py-2 text-sm text-neutral-700 bg-white outline-none focus:border-pink cursor-pointer transition-colors">
+                    <option value="">Sort by</option>
+                    <option value="title-asc">Name A–Z</option>
+                    <option value="title-desc">Name Z–A</option>
+                    <option value="price-asc">Price: low to high</option>
+                    <option value="price-desc">Price: high to low</option>
+                </select>
+            </div>
+
+            {
+                products.length > 0 ?
+                    <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-7">
+                        {products.map(product => (
+                            <ProductCard product={product} />
+                        ))}
+                    </div>
+                :   <div class="flex flex-col items-center justify-center py-24 gap-4 text-center">
+                        <div class="text-neutral-300">
+                            <svg
+                                width="80"
+                                height="80"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1"
+                                stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <>
+                                    <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+                                    <polyline points="16 3 12 7 8 3" />
+                                </>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-heading font-bold text-neutral-700">Shop coming soon</h2>
+                        <p class="text-neutral-400 max-w-xs">We're preparing our collection. Check back soon!</p>
+                        <a href="/" class="btn btn-primary mt-2">
+                            Back to Home
+                        </a>
+                    </div>
+            }
+        </div>
+    </section>
+</Layout>
+
+<script>
+    const select = document.getElementById('sort-select') as HTMLSelectElement
+    const grid = document.getElementById('products-grid')
+
+    select?.addEventListener('change', () => {
+        if (!grid) return
+        const cards = Array.from(grid.querySelectorAll('article'))
+        const val = select.value
+
+        cards.sort((a, b) => {
+            const titleA = a.querySelector('h3')?.textContent ?? ''
+            const titleB = b.querySelector('h3')?.textContent ?? ''
+            const priceA = parseFloat(a.querySelector('.text-pink')?.textContent?.replace(/[^\d.]/g, '') ?? '0')
+            const priceB = parseFloat(b.querySelector('.text-pink')?.textContent?.replace(/[^\d.]/g, '') ?? '0')
+
+            if (val === 'title-asc') return titleA.localeCompare(titleB, 'en')
+            if (val === 'title-desc') return titleB.localeCompare(titleA, 'en')
+            if (val === 'price-asc') return priceA - priceB
+            if (val === 'price-desc') return priceB - priceA
+            return 0
+        })
+
+        cards.forEach(card => grid.appendChild(card))
+    })
+</script>

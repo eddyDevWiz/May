@@ -1,0 +1,58 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollections } from '../../lib/shopify';
+
+const collections = await getCollections();
+---
+
+<Layout
+  title="Collections — May Garcia"
+  description="Browse the May Garcia collections. Original art, illustrations and unique handmade pieces by category."
+>
+  <div class="bg-gradient-to-br from-pink-bg to-white border-b border-neutral-100 py-12 text-center">
+    <div class="container">
+      <h1 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-2">Collections</h1>
+      <p class="text-neutral-500">Browse our work by category</p>
+    </div>
+  </div>
+
+  <section class="section flex justify-center">
+    <div class="container">
+      {collections.length > 0 ? (
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7">
+          {collections.map(col => (
+            <a
+              href={`/collections/${col.handle}`}
+              class="group block rounded-2xl overflow-hidden bg-white shadow-card hover:shadow-hover hover:-translate-y-1 transition-all duration-200 no-underline text-inherit"
+            >
+              <div class="aspect-[4/3] overflow-hidden bg-pink-bg">
+                {col.image ? (
+                  <img
+                    src={col.image.url}
+                    alt={col.image.altText ?? col.title}
+                    loading="lazy"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                ) : (
+                  <div class="w-full h-full flex items-center justify-center text-5xl font-bold text-pink/30 font-heading">
+                    {col.title.charAt(0)}
+                  </div>
+                )}
+              </div>
+              <div class="flex items-center justify-between px-5 py-4">
+                <h3 class="font-heading text-base font-semibold text-neutral-800">{col.title}</h3>
+                <span class="text-base text-pink font-semibold group-hover:translate-x-1 transition-transform duration-200">→</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="flex flex-col items-center justify-center py-24 gap-4 text-center">
+          <h2 class="text-xl font-heading font-bold text-neutral-700">No collections yet</h2>
+          <p class="text-neutral-400 max-w-xs">Collections will appear here once they're published.</p>
+          <a href="/shop" class="btn btn-primary mt-2">Browse all products</a>
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

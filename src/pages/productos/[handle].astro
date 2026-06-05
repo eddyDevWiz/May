@@ -1,0 +1,602 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { getProductByHandle, getProducts, formatPrice } from '../../lib/shopify';
+
+export const prerender = false;
+
+const { handle } = Astro.params;
+if (!handle) return Astro.redirect('/productos');
+
+const [product, related] = await Promise.all([
+  getProductByHandle(handle),
+  getProducts(4),
+]);
+
+if (!product) return Astro.redirect('/productos');
+
+const relatedProducts = related.filter(p => p.handle !== handle).slice(0, 4);
+
+const price = formatPrice(
+  product.priceRange.minVariantPrice.amount,
+  product.priceRange.minVariantPrice.currencyCode
+);
+
+const hasMultiplePrices =
+  product.priceRange.minVariantPrice.amount !== product.priceRange.maxVariantPrice.amount;
+---
+
+<Layout
+  title={`${product.title} — May Garcia`}
+  description={product.description.slice(0, 155)}
+  image={product.featuredImage?.url}
+>
+  <div class="product-page">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Inicio</a>
+        <span>/</span>
+        <a href="/productos">Tienda</a>
+        <span>/</span>
+        <span aria-current="page">{product.title}</span>
+      </nav>
+
+      <div class="product-layout">
+        <!-- Gallery -->
+        <div class="product-gallery">
+          <div class="main-image" id="main-image">
+            {product.featuredImage ? (
+              <img
+                src={product.featuredImage.url}
+                alt={product.featuredImage.altText ?? product.title}
+                width={product.featuredImage.width}
+                height={product.featuredImage.height}
+                loading="eager"
+                decoding="async"
+                id="main-img"
+              />
+            ) : (
+              <div class="no-image">
+                <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="200" height="200" fill="#fff0f6"/>
+                  <circle cx="100" cy="100" r="50" fill="#ff4691" opacity="0.3"/>
+                </svg>
+              </div>
+            )}
+
+            {!product.availableForSale && (
+              <div class="sold-out-overlay">Agotado</div>
+            )}
+          </div>
+
+          {product.images.nodes.length > 1 && (
+            <div class="thumbnails" role="list">
+              {product.images.nodes.map((img, i) => (
+                <button
+                  class={`thumb-btn ${i === 0 ? 'active' : ''}`}
+                  data-src={img.url}
+                  data-alt={img.altText ?? product.title}
+                  aria-label={`Ver imagen ${i + 1}`}
+                  role="listitem"
+                >
+                  <img src={img.url} alt={img.altText ?? ''} width="80" height="80" loading="lazy" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info">
+          <!-- Title & Price -->
+          <h1 class="product-title">{product.title}</h1>
+
+          <div class="product-price-wrap">
+            <span class="product-price">{hasMultiplePrices ? `Desde ${price}` : price}</span>
+            {!product.availableForSale && (
+              <span class="badge badge-sold-out">Agotado</span>
+            )}
+          </div>
+
+          <!-- Rating placeholder -->
+          <div class="rating" aria-label="5 estrellas">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(12 reseñas)</span>
+          </div>
+
+          <!-- Variants -->
+          {product.variants.nodes.length > 1 && (
+            <div class="variants-section">
+              <p class="variants-label">
+                Variante: <strong id="selected-variant-label">{product.variants.nodes[0]?.title}</strong>
+              </p>
+              <div class="variants-grid" role="group" aria-label="Seleccionar variante">
+                {product.variants.nodes.map((v, i) => (
+                  <button
+                    class={`variant-btn ${i === 0 ? 'active' : ''} ${!v.availableForSale ? 'unavailable' : ''}`}
+                    data-variant-id={v.id}
+                    data-variant-title={v.title}
+                    data-variant-price={formatPrice(v.price.amount, v.price.currencyCode)}
+                    disabled={!v.availableForSale}
+                    aria-pressed={i === 0 ? 'true' : 'false'}
+                  >
+                    {v.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <!-- Description -->
+          {product.descriptionHtml && (
+            <div class="product-description" set:html={product.descriptionHtml} />
+          )}
+
+          <!-- Add to Cart -->
+          <div class="add-to-cart-wrap">
+            <div class="qty-selector">
+              <button class="qty-btn-lg" id="qty-dec" aria-label="Disminuir cantidad">−</button>
+              <input
+                type="number"
+                id="qty-input"
+                value="1"
+                min="1"
+                max="99"
+                aria-label="Cantidad"
+                readonly
+              />
+              <button class="qty-btn-lg" id="qty-inc" aria-label="Aumentar cantidad">+</button>
+            </div>
+
+            {product.availableForSale ? (
+              <button
+                class="btn btn-primary btn-lg add-cart-btn"
+                id="add-to-cart"
+                data-variant-id={product.variants.nodes[0]?.id}
+                data-product-title={product.title}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                Agregar al carrito
+              </button>
+            ) : (
+              <button class="btn btn-lg add-cart-btn" disabled style="background: var(--border); color: var(--text-muted); cursor:not-allowed; flex:1">
+                Agotado
+              </button>
+            )}
+          </div>
+
+          <!-- Buy Now -->
+          {product.availableForSale && (
+            <button class="btn btn-outline btn-lg buy-now-btn" id="buy-now" style="width:100%">
+              Comprar ahora
+            </button>
+          )}
+
+          <!-- Tags -->
+          {product.tags.length > 0 && (
+            <div class="product-tags">
+              {product.tags.map(tag => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          )}
+
+          <!-- Shipping info -->
+          <div class="shipping-info">
+            <div class="shipping-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+              <span>Envío a todo Colombia</span>
+            </div>
+            <div class="shipping-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <span>Compra 100% segura</span>
+            </div>
+            <div class="shipping-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              </svg>
+              <span>Empaque especial para arte</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  {relatedProducts.length > 0 && (
+    <section class="section bg-cream">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">También te puede gustar</span>
+          <h2>Obras relacionadas</h2>
+          <div class="divider"></div>
+        </div>
+        <div class="grid-products">
+          {relatedProducts.map(p => <ProductCard product={p} />)}
+        </div>
+      </div>
+    </section>
+  )}
+</Layout>
+
+<style>
+  .product-page { padding: 2rem 0 4rem; }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+
+  .breadcrumb a { color: var(--pink); font-weight: 500; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  /* Layout */
+  .product-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  /* Gallery */
+  .main-image {
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: var(--bg-cream);
+    aspect-ratio: 1;
+  }
+
+  .main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .no-image svg { width: 100%; height: 100%; }
+
+  .sold-out-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .thumbnails {
+    display: flex;
+    gap: 0.625rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .thumb-btn {
+    width: 72px;
+    height: 72px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color var(--transition);
+    padding: 0;
+    background: none;
+  }
+
+  .thumb-btn img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb-btn.active { border-color: var(--pink); }
+  .thumb-btn:hover { border-color: var(--pink-light); }
+
+  /* Product Info */
+  .product-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .product-price-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .product-price {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--pink);
+  }
+
+  /* Rating */
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stars { color: #f5a623; font-size: 0.9375rem; letter-spacing: 2px; }
+  .rating-count { font-size: 0.8125rem; color: var(--text-muted); }
+
+  /* Variants */
+  .variants-section { margin-bottom: 1.5rem; }
+  .variants-label { font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.75rem; }
+
+  .variants-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .variant-btn {
+    padding: 0.5rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: #fff;
+    color: var(--text);
+    transition: all var(--transition);
+  }
+
+  .variant-btn.active {
+    border-color: var(--pink);
+    background: var(--pink-bg);
+    color: var(--pink);
+  }
+
+  .variant-btn:hover:not(.unavailable):not(.active) {
+    border-color: var(--pink-light);
+  }
+
+  .variant-btn.unavailable {
+    opacity: 0.4;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+
+  /* Description */
+  .product-description {
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-light);
+    font-size: 0.9375rem;
+    line-height: 1.8;
+  }
+
+  .product-description :global(p) { margin-bottom: 0.75rem; }
+  .product-description :global(ul) { padding-left: 1.25rem; }
+  .product-description :global(li) { margin-bottom: 0.375rem; }
+
+  /* Add to Cart */
+  .add-to-cart-wrap {
+    display: flex;
+    gap: 0.875rem;
+    align-items: center;
+    margin-bottom: 0.875rem;
+  }
+
+  .qty-selector {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .qty-btn-lg {
+    width: 40px;
+    height: 48px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.125rem;
+    color: var(--text);
+    transition: all var(--transition);
+  }
+
+  .qty-btn-lg:hover { background: var(--pink-bg); color: var(--pink); }
+
+  #qty-input {
+    width: 44px;
+    height: 48px;
+    border: none;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    background: #fff;
+    -moz-appearance: textfield;
+  }
+
+  #qty-input::-webkit-inner-spin-button,
+  #qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .add-cart-btn { flex: 1; }
+
+  .buy-now-btn { margin-bottom: 1.5rem; }
+
+  /* Tags */
+  .product-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .tag {
+    padding: 0.25rem 0.75rem;
+    background: var(--bg-cream);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+
+  /* Shipping */
+  .shipping-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    padding: 1.25rem;
+    background: var(--bg-cream);
+    border-radius: var(--radius-lg);
+  }
+
+  .shipping-item {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.875rem;
+    color: var(--text-light);
+  }
+
+  .shipping-item svg { color: var(--pink); flex-shrink: 0; }
+
+  .bg-cream { background: var(--bg-cream); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .product-layout { grid-template-columns: 1fr; gap: 2rem; }
+  }
+
+  @media (max-width: 500px) {
+    .add-to-cart-wrap { flex-direction: column; }
+    .add-cart-btn { width: 100%; }
+  }
+</style>
+
+<script>
+  // Gallery thumbnails
+  document.querySelectorAll('.thumb-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const b = btn as HTMLButtonElement;
+      const src = b.dataset.src!;
+      const alt = b.dataset.alt!;
+      const mainImg = document.getElementById('main-img') as HTMLImageElement;
+      if (mainImg) { mainImg.src = src; mainImg.alt = alt; }
+      document.querySelectorAll('.thumb-btn').forEach(t => t.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+
+  // Quantity
+  let qty = 1;
+  const qtyInput = document.getElementById('qty-input') as HTMLInputElement;
+  document.getElementById('qty-dec')?.addEventListener('click', () => {
+    if (qty > 1) { qty--; qtyInput.value = String(qty); }
+  });
+  document.getElementById('qty-inc')?.addEventListener('click', () => {
+    if (qty < 99) { qty++; qtyInput.value = String(qty); }
+  });
+
+  // Variants
+  let selectedVariantId = (document.getElementById('add-to-cart') as HTMLButtonElement)?.dataset.variantId ?? '';
+
+  document.querySelectorAll('.variant-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const b = btn as HTMLButtonElement;
+      document.querySelectorAll('.variant-btn').forEach(v => {
+        v.classList.remove('active');
+        v.setAttribute('aria-pressed', 'false');
+      });
+      b.classList.add('active');
+      b.setAttribute('aria-pressed', 'true');
+      selectedVariantId = b.dataset.variantId!;
+
+      const label = document.getElementById('selected-variant-label');
+      if (label) label.textContent = b.dataset.variantTitle!;
+
+      const priceEl = document.querySelector('.product-price');
+      if (priceEl) priceEl.textContent = b.dataset.variantPrice!;
+
+      const addBtn = document.getElementById('add-to-cart') as HTMLButtonElement;
+      if (addBtn) addBtn.dataset.variantId = selectedVariantId;
+    });
+  });
+
+  // Add to Cart
+  document.getElementById('add-to-cart')?.addEventListener('click', async () => {
+    const btn = document.getElementById('add-to-cart') as HTMLButtonElement;
+    const productTitle = btn.dataset.productTitle ?? 'Producto';
+    btn.disabled = true;
+    btn.textContent = 'Agregando...';
+
+    try {
+      const res = await fetch('/api/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ variantId: selectedVariantId, quantity: qty }),
+      });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      (window as any).__cart = data.cart;
+      localStorage.setItem('mg_cart', JSON.stringify(data.cart));
+      (window as any).updateCartCount?.();
+      (window as any).showToast?.(`✓ ${productTitle} agregado al carrito`);
+      (window as any).openCart?.();
+    } catch {
+      (window as any).showToast?.('Error al agregar al carrito');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Agregar al carrito`;
+    }
+  });
+
+  // Buy Now
+  document.getElementById('buy-now')?.addEventListener('click', async () => {
+    const btn = document.getElementById('buy-now') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Procesando...';
+
+    try {
+      const res = await fetch('/api/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ variantId: selectedVariantId, quantity: qty }),
+      });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (data.cart?.checkoutUrl) {
+        window.location.href = data.cart.checkoutUrl;
+      }
+    } catch {
+      (window as any).showToast?.('Error al procesar');
+      btn.disabled = false;
+      btn.textContent = 'Comprar ahora';
+    }
+  });
+</script>

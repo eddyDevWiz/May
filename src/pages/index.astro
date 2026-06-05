@@ -1,0 +1,193 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Hero from '../components/Hero.astro'
+import ProductCard from '../components/ProductCard.astro'
+import { getProducts, getCollections } from '../lib/shopify'
+
+const [products, collections] = await Promise.all([getProducts(8), getCollections()])
+---
+
+<Layout
+    title="May Garcia — Contemporary Art & Design"
+    description="Discover the May Garcia collection. Contemporary art, illustrations and unique handmade pieces from Colombia.">
+    <Hero />
+
+    <!-- Collections -->
+    {
+        collections.length > 0 && (
+            <section class="section bg-cream flex justify-center pb-10">
+                <div class="container">
+                    <div class="text-center mb-12 animate-fade-up">
+                        <span class="eyebrow">Collections</span>
+                        <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mt-2 mb-4">
+                            Browse by category
+                        </h2>
+                        <div class="divider" />
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 animate-fade-up">
+                        {collections.slice(0, 4).map(col => (
+                            <a
+                                href={`/collections/${col.handle}`}
+                                class="group block rounded-2xl overflow-hidden bg-white shadow-card hover:shadow-hover hover:-translate-y-1 transition-all duration-200 no-underline text-inherit">
+                                <div class="aspect-[4/3] overflow-hidden bg-pink-bg">
+                                    {col.image ?
+                                        <img
+                                            src={col.image.url}
+                                            alt={col.image.altText ?? col.title}
+                                            loading="lazy"
+                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                    :   <div class="w-full h-full flex items-center justify-center text-5xl font-bold text-pink/30 font-heading">
+                                            {col.title.charAt(0)}
+                                        </div>
+                                    }
+                                </div>
+                                <div class="flex items-center justify-between px-4 py-3.5">
+                                    <h3 class="font-heading text-sm font-semibold text-neutral-800">{col.title}</h3>
+                                    <span class="text-sm text-pink font-semibold group-hover:translate-x-1 transition-transform duration-200">
+                                        →
+                                    </span>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        )
+    }
+
+    <!-- Featured Products -->
+    <section class="section flex justify-center">
+        <div class="container">
+            <div class="text-center mb-12 animate-fade-up">
+                <span class="eyebrow">Featured</span>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mt-2 mb-3">
+                    Most loved pieces
+                </h2>
+                <p class="text-neutral-500 max-w-md mx-auto text-base">
+                    Each artwork is handmade with high-quality materials.
+                </p>
+                <div class="divider"></div>
+            </div>
+
+            {
+                products.length > 0 ?
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-7 animate-fade-up">
+                        {products.map(product => (
+                            <ProductCard product={product} />
+                        ))}
+                    </div>
+                :   <div class="text-center py-16">
+                        <p class="text-neutral-400 text-sm mb-6">Connect Shopify to display your products here.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-5 opacity-40 pointer-events-none">
+                            {Array.from({ length: 4 }).map(() => (
+                                <div class="rounded-2xl overflow-hidden">
+                                    <div class="skeleton aspect-square" />
+                                    <div class="p-4">
+                                        <div class="skeleton h-4 w-3/4 mb-2" />
+                                        <div class="skeleton h-3 w-1/2" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+            }
+
+            <div class="flex justify-center mt-12 pb-10">
+                <a href="/shop" class="btn btn-outline btn-lg">View All Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value props -->
+    <section class="section bg-pink-bg">
+        <div class="container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            {
+                [
+                    {
+                        icon: '🎨',
+                        title: 'Original Art',
+                        desc: 'Every piece is unique, handmade with artisan techniques.'
+                    },
+                    {
+                        icon: '🚚',
+                        title: 'Nationwide Shipping',
+                        desc: 'We ship across Colombia with special packaging to protect your art.'
+                    },
+                    {
+                        icon: '✨',
+                        title: 'Premium Quality',
+                        desc: 'Carefully selected materials so your artwork lasts a lifetime.'
+                    },
+                    {
+                        icon: '💬',
+                        title: 'Personal Support',
+                        desc: 'Direct assistance from May Garcia for your ideal purchase.'
+                    }
+                ].map(({ icon, title, desc }) => (
+                    <div class="px-4 py-8">
+                        <span class="text-4xl block mb-4">{icon}</span>
+                        <h3 class="font-heading text-base font-semibold text-neutral-800 mb-2">{title}</h3>
+                        <p class="text-sm text-neutral-500 leading-relaxed">{desc}</p>
+                    </div>
+                ))
+            }
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section flex justify-center pb-10">
+        <div class="container">
+            <div class="text-center mb-12 animate-fade-up">
+                <span class="eyebrow">Reviews</span>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mt-2">What clients say</h2>
+                <div class="divider"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-up">
+                {
+                    [
+                        {
+                            text: 'The artwork arrived perfectly packaged. Exactly as shown in photos — incredibly beautiful. I already want another one!',
+                            author: 'María R.',
+                            location: 'Bogotá'
+                        },
+                        {
+                            text: "May's art transforms any space. I received so many compliments. The customer service was impeccable.",
+                            author: 'Carlos M.',
+                            location: 'Medellín'
+                        },
+                        {
+                            text: 'I bought it as a gift and my friend was delighted. Luxury packaging, arrived ahead of schedule. Highly recommended.',
+                            author: 'Ana L.',
+                            location: 'Cali'
+                        }
+                    ].map(({ text, author, location }) => (
+                        <blockquote class="bg-cream rounded-2xl p-7 border-l-4 border-pink">
+                            <div class="text-amber-400 text-base tracking-widest mb-4" aria-label="5 stars">
+                                ★★★★★
+                            </div>
+                            <p class="text-neutral-600 text-sm leading-relaxed italic mb-5">"{text}"</p>
+                            <footer class="flex flex-col">
+                                <strong class="text-sm font-semibold text-neutral-800">{author}</strong>
+                                <span class="text-xs text-neutral-400">{location}</span>
+                            </footer>
+                        </blockquote>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="py-20 bg-gradient-to-br from-pink to-pink-dark">
+        <div class="container flex flex-col sm:flex-row items-center justify-between gap-6 flex-wrap">
+            <div>
+                <h2 class="text-2xl md:text-3xl font-heading font-bold text-white mb-2">Looking for a custom piece?</h2>
+                <p class="text-white/80 text-base">Reach out and we'll create the perfect artwork together.</p>
+            </div>
+            <a href="/contact" class="btn btn-dark btn-lg flex-shrink-0">Get in Touch</a>
+        </div>
+    </section>
+</Layout>

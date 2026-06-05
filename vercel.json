@@ -1,0 +1,10 @@
+{
+  "framework": "astro",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "env": {
+    "PUBLIC_SHOPIFY_STORE_DOMAIN": "@shopify_store_domain",
+    "PUBLIC_SHOPIFY_STOREFRONT_TOKEN": "@shopify_storefront_token"
+  }
+}

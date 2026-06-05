@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body { @apply font-sans text-neutral-800 bg-white antialiased leading-relaxed; }
+
+  h1, h2, h3, h4, h5, h6 { @apply font-heading font-semibold leading-tight; }
+
+  a { @apply transition-colors duration-200; }
+  a:hover { @apply text-pink; }
+
+  img, picture, video, canvas, svg { @apply block max-w-full; }
+
+  input, button, textarea, select { font: inherit; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-cream; }
+  ::-webkit-scrollbar-thumb { @apply bg-pink-light rounded-full; }
+
+  :focus-visible { @apply outline-dashed outline-2 outline-offset-2 outline-pink; }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg
+           text-sm font-semibold border-2 border-transparent cursor-pointer
+           transition-all duration-200 no-underline whitespace-nowrap;
+  }
+  .btn-primary {
+    @apply bg-pink text-white border-pink
+           hover:bg-pink-dark hover:border-pink-dark hover:-translate-y-px hover:shadow-pink;
+  }
+  .btn-outline {
+    @apply bg-transparent text-pink border-pink
+           hover:bg-pink hover:text-white hover:-translate-y-px;
+  }
+  .btn-dark {
+    @apply bg-neutral-800 text-white border-neutral-800
+           hover:bg-neutral-900 hover:-translate-y-px;
+  }
+  .btn-ghost {
+    @apply bg-transparent text-neutral-600 border-transparent hover:bg-cream hover:text-pink;
+  }
+  .btn-lg { @apply px-8 py-4 text-base; }
+  .btn-sm { @apply px-4 py-2 text-xs; }
+
+  .section {
+    @apply py-16 md:py-24;
+  }
+
+  .eyebrow {
+    @apply inline-block text-xs font-bold tracking-widest uppercase text-pink;
+  }
+
+  .divider { @apply w-12 h-[3px] bg-pink rounded-full mx-auto mt-4; }
+
+  #toast {
+    @apply fixed bottom-8 right-8 bg-neutral-800 text-white px-5 py-3 rounded-lg
+           text-sm font-medium z-[9999] pointer-events-none
+           opacity-0 translate-y-2 transition-all duration-300;
+  }
+  #toast.show { @apply opacity-100 translate-y-0; }
+}
+
+@layer utilities {
+  .animate-fade-up { animation: fadeUp 0.6s ease both; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}

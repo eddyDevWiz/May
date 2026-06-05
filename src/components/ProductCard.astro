@@ -1,0 +1,145 @@
+---
+import type { Product } from '../types/shopify';
+import { formatPrice } from '../lib/shopify';
+import { cartStore } from '../store/cart';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+
+const minPrice = product.priceRange.minVariantPrice;
+const maxPrice = product.priceRange.maxVariantPrice;
+const price    = formatPrice(minPrice.amount, minPrice.currencyCode);
+const hasDiscount = parseFloat(maxPrice.amount) > parseFloat(minPrice.amount);
+const isNew       = product.tags.includes('new') || product.tags.includes('nuevo');
+const firstVariantId = product.variants.nodes[0]?.id ?? '';
+---
+
+<article class="group flex flex-col rounded-2xl overflow-hidden bg-white shadow-card hover:shadow-hover hover:-translate-y-1 transition-all duration-200">
+  <a href={`/shop/${product.handle}`} class="flex flex-col flex-1 no-underline text-inherit" aria-label={product.title}>
+
+    <!-- Image -->
+    <div class="relative overflow-hidden aspect-square bg-cream">
+      {product.featuredImage ? (
+        <img
+          src={product.featuredImage.url}
+          alt={product.featuredImage.altText ?? product.title}
+          width={product.featuredImage.width}
+          height={product.featuredImage.height}
+          loading="lazy"
+          decoding="async"
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <div class="w-full h-full flex items-center justify-center">
+          <svg viewBox="0 0 200 200" fill="none" class="w-full h-full" aria-hidden="true">
+            <rect width="200" height="200" fill="#fff0f6"/>
+            <circle cx="100" cy="85" r="35" fill="#ff4691" opacity="0.3"/>
+            <path d="M60 140 Q100 110 140 140" stroke="#ff4691" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+        </div>
+      )}
+
+      <!-- Badges -->
+      <div class="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+        {!product.availableForSale && (
+          <span class="badge bg-black/65 text-white text-[10px] px-2.5 py-1 rounded-full font-bold">Sold Out</span>
+        )}
+        {isNew && product.availableForSale && (
+          <span class="badge bg-pink text-white text-[10px] px-2.5 py-1 rounded-full font-bold">New</span>
+        )}
+        {hasDiscount && product.availableForSale && (
+          <span class="badge bg-orange-500 text-white text-[10px] px-2.5 py-1 rounded-full font-bold">Sale</span>
+        )}
+      </div>
+
+      <!-- Quick add overlay -->
+      {product.availableForSale && (
+        <div class="absolute bottom-0 inset-x-0 bg-pink/90 text-white text-center py-3 text-sm font-semibold translate-y-full group-hover:translate-y-0 transition-transform duration-300" aria-hidden="true">
+          Add to Cart
+        </div>
+      )}
+    </div>
+
+    <!-- Info -->
+    <div class="px-4 pt-4 pb-2 flex-1">
+      <h3 class="font-heading text-sm font-semibold text-neutral-800 leading-snug mb-2 line-clamp-2">{product.title}</h3>
+      <div class="flex items-center gap-2">
+        <span class="font-heading font-bold text-pink text-base">{price}</span>
+        {hasDiscount && (
+          <span class="text-xs text-neutral-400 line-through">
+            {formatPrice(maxPrice.amount, maxPrice.currencyCode)}
+          </span>
+        )}
+      </div>
+    </div>
+  </a>
+
+  <!-- Add to cart button -->
+  {product.availableForSale ? (
+    <button
+      class="mx-4 mb-4 flex items-center justify-center gap-2 bg-pink hover:bg-pink-dark text-white text-xs font-bold py-2.5 rounded-lg transition-all duration-200 hover:-translate-y-px cursor-pointer border-0 add-cart-btn"
+      data-variant-id={firstVariantId}
+      data-product-title={product.title}
+      aria-label={`Add ${product.title} to cart`}
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      Add to Cart
+    </button>
+  ) : (
+    <div class="mx-4 mb-4 text-center bg-neutral-100 text-neutral-400 text-xs font-bold py-2.5 rounded-lg cursor-not-allowed">
+      Sold Out
+    </div>
+  )}
+</article>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.add-cart-btn').forEach(btn => {
+    btn.addEventListener('click', async e => {
+      e.preventDefault();
+      const variantId    = btn.dataset.variantId!;
+      const productTitle = btn.dataset.productTitle ?? 'Product';
+      const originalHTML = btn.innerHTML;
+
+      btn.disabled   = true;
+      btn.textContent = 'Adding…';
+
+      const existingCart = (window as any).__cartStore?.get();
+
+      try {
+        const res = await fetch('/api/cart/add', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ variantId, quantity: 1, cartId: existingCart?.id }),
+        });
+        if (!res.ok) throw new Error();
+        const { cart } = await res.json();
+        (window as any).__cartStore?.set(cart);
+        window.dispatchEvent(new Event('cart:open'));
+
+        const toast = document.getElementById('toast');
+        if (toast) {
+          toast.textContent = `✓ ${productTitle} added to cart`;
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+      } catch {
+        const toast = document.getElementById('toast');
+        if (toast) {
+          toast.textContent = 'Could not add to cart. Try again.';
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+      } finally {
+        btn.disabled  = false;
+        btn.innerHTML = originalHTML;
+      }
+    });
+  });
+</script>
