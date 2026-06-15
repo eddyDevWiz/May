@@ -42,16 +42,16 @@ export default {
           '0%':   { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
         },
-        bounce: {
+        scrollBounce: {
           '0%,100%': { transform: 'translateX(-50%) translateY(0)' },
-          '50%':     { transform: 'translateX(-50%) translateY(6px)' },
+          '50%':     { transform: 'translateX(-50%) translateY(8px)' },
         },
       },
       animation: {
         'fade-up': 'fadeUp 0.6s ease both',
         'float':   'float 3s ease-in-out infinite',
         'shimmer': 'shimmer 1.5s infinite',
-        'bounce-x':'bounce 2s ease-in-out infinite',
+        'bounce-x':'scrollBounce 2s ease-in-out infinite',
       },
     },
   },
