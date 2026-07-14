@@ -1,0 +1,43 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import { getProducts } from '../../../lib/shopify';
+import { useTranslations } from '../../../i18n/utils';
+
+const t = useTranslations('en');
+const products = await getProducts(24);
+---
+
+<Layout title="Shop — May Garcia" description="Explore all May Garcia products. Original art, illustrations and unique handmade pieces.">
+    <div class="bg-gradient-to-br from-pink-bg to-white border-b border-neutral-100 py-12 text-center">
+        <div class="container">
+            <h1 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-2">{t.shop.title}</h1>
+            <p class="text-neutral-500">{t.shop.subtitle}</p>
+        </div>
+    </div>
+    <section class="section flex justify-center">
+        <div class="container">
+            <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
+                <p class="text-sm text-neutral-400">{products.length} {products.length === 1 ? t.shop.product : t.shop.products}</p>
+                <select id="sort-select" aria-label={t.shop.sort} class="border-2 border-neutral-200 rounded-lg px-4 py-2 text-sm text-neutral-700 bg-white outline-none focus:border-pink cursor-pointer transition-colors">
+                    <option value="">{t.shop.sort}</option>
+                    <option value="title-asc">{t.shop.sortNameAsc}</option>
+                    <option value="title-desc">{t.shop.sortNameDesc}</option>
+                    <option value="price-asc">{t.shop.sortPriceAsc}</option>
+                    <option value="price-desc">{t.shop.sortPriceDesc}</option>
+                </select>
+            </div>
+            {products.length > 0 ?
+                <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-7">
+                    {products.map(product => <ProductCard product={product} />)}
+                </div>
+            :
+                <div class="flex flex-col items-center justify-center py-24 gap-4 text-center">
+                    <h2 class="text-xl font-heading font-bold text-neutral-700">{t.shop.comingSoon}</h2>
+                    <p class="text-neutral-400 max-w-xs">{t.shop.comingSoonSub}</p>
+                    <a href="/en" class="btn btn-primary mt-2">{t.shop.backHome}</a>
+                </div>
+            }
+        </div>
+    </section>
+</Layout>

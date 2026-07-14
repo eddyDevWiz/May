@@ -1,0 +1,108 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { getProducts, getCollections } from '../../lib/shopify';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations('en');
+const [products, collections] = await Promise.all([getProducts(8), getCollections()]);
+---
+
+<Layout
+    title="May Garcia — Contemporary Art & Design"
+    description="Discover the May Garcia collection. Contemporary art, illustrations and unique handmade pieces from Colombia.">
+    <Hero lang="en" />
+
+    <!-- Collections -->
+    {collections.length > 0 && (
+        <section class="section bg-cream flex justify-center pb-10">
+            <div class="container">
+                <div class="text-center mb-12 animate-fade-up">
+                    <span class="eyebrow">{t.home.collectionsEyebrow}</span>
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mt-2 mb-4">
+                        {t.home.collectionsTitle}
+                    </h2>
+                    <div class="divider" />
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 animate-fade-up">
+                    {collections.slice(0, 4).map(col => (
+                        <a href={`/en/collections/${col.handle}`} class="group block rounded-2xl overflow-hidden bg-white shadow-card hover:shadow-hover hover:-translate-y-1 transition-all duration-200 no-underline text-inherit">
+                            <div class="aspect-[4/3] overflow-hidden bg-pink-bg">
+                                {col.image ?
+                                    <img src={col.image.url} alt={col.image.altText ?? col.title} loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                :   <div class="w-full h-full flex items-center justify-center text-5xl font-bold text-pink/30 font-heading">{col.title.charAt(0)}</div>
+                                }
+                            </div>
+                            <div class="flex items-center justify-between px-4 py-3.5">
+                                <h3 class="font-heading text-sm font-semibold text-neutral-800">{col.title}</h3>
+                                <span class="text-sm text-pink font-semibold group-hover:translate-x-1 transition-transform duration-200">→</span>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        </section>
+    )}
+
+    <!-- A World of Color -->
+    <section class="relative py-28 md:py-36 overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="/images/IMG_2103.jpg" alt="" aria-hidden="true" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-neutral-900/60"></div>
+        </div>
+        <div class="container relative z-10">
+            <div class="max-w-2xl mx-auto text-center animate-fade-up">
+                <span class="eyebrow text-pink-light">{t.home.colorEyebrow}</span>
+                <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mt-3 mb-5">{t.home.colorTitle}</h2>
+                <p class="text-white/85 text-base md:text-lg leading-relaxed">{t.home.colorText}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="section flex justify-center">
+        <div class="container">
+            <div class="text-center mb-12 animate-fade-up">
+                <span class="eyebrow">{t.home.featuredEyebrow}</span>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mt-2 mb-3">{t.home.featuredTitle}</h2>
+                <p class="text-neutral-500 max-w-md mx-auto text-base">{t.home.featuredSub}</p>
+                <div class="divider"></div>
+            </div>
+            {products.length > 0 ?
+                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-7 animate-fade-up">
+                    {products.map(product => <ProductCard product={product} />)}
+                </div>
+            : null}
+            <div class="flex justify-center mt-12 pb-10">
+                <a href="/en/shop" class="btn btn-outline btn-lg">{t.home.viewAll}</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Behind the Canvas -->
+    <section class="relative py-28 md:py-36 overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="/images/05E61361-00F4-4ECD-A7C8-AE1CD9D3B846.jpg" alt="" aria-hidden="true" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-neutral-900/55"></div>
+        </div>
+        <div class="container relative z-10">
+            <div class="max-w-2xl mx-auto text-center animate-fade-up">
+                <span class="eyebrow text-pink-light">{t.home.canvasEyebrow}</span>
+                <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mt-3 mb-5">{t.home.canvasTitle}</h2>
+                <p class="text-white/85 text-base md:text-lg leading-relaxed">{t.home.canvasText}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-20 bg-gradient-to-br from-pink to-pink-dark">
+        <div class="container flex flex-col sm:flex-row items-center justify-between gap-6 flex-wrap">
+            <div>
+                <h2 class="text-2xl md:text-3xl font-heading font-bold text-white mb-2">{t.home.ctaTitle}</h2>
+                <p class="text-white/80 text-base">{t.home.ctaSub}</p>
+            </div>
+            <a href="/en/contact" class="btn btn-dark btn-lg flex-shrink-0">{t.home.ctaBtn}</a>
+        </div>
+    </section>
+</Layout>

@@ -6,7 +6,7 @@ export type { Product, ProductImage, ProductVariant, Collection, Cart, CartLine 
 const client = createStorefrontApiClient({
   storeDomain: import.meta.env.PUBLIC_SHOPIFY_STORE_DOMAIN,
   publicAccessToken: import.meta.env.PUBLIC_SHOPIFY_STOREFRONT_TOKEN,
-  apiVersion: '2024-10',
+  apiVersion: '2025-10',
 });
 
 // GraphQL fragment shared across queries

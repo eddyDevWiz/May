@@ -3,59 +3,47 @@ import Layout from '../layouts/Layout.astro'
 import Hero from '../components/Hero.astro'
 import ProductCard from '../components/ProductCard.astro'
 import { getProducts, getCollections } from '../lib/shopify'
+import { useTranslations } from '../i18n/utils'
 
+const t = useTranslations('es')
 const [products, collections] = await Promise.all([getProducts(8), getCollections()])
 ---
 
 <Layout
-    title="May Garcia — Contemporary Art & Design"
-    description="Discover the May Garcia collection. Contemporary art, illustrations and unique handmade pieces from Colombia.">
-    <Hero />
+    title="May Garcia — Arte Contemporáneo & Diseño"
+    description="Descubre la colección May Garcia. Arte contemporáneo, ilustraciones y piezas únicas hechas a mano en Colombia.">
+    <Hero lang="es" />
 
     <!-- Collections -->
-    {
-        collections.length > 0 && (
-            <section class="section bg-cream flex justify-center pb-10">
-                <div class="container">
-                    <div class="text-center mb-12 animate-fade-up">
-                        <span class="eyebrow">Collections</span>
-                        <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mt-2 mb-4">
-                            Browse by category
-                        </h2>
-                        <div class="divider" />
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 animate-fade-up">
-                        {collections.slice(0, 4).map(col => (
-                            <a
-                                href={`/collections/${col.handle}`}
-                                class="group block rounded-2xl overflow-hidden bg-white shadow-card hover:shadow-hover hover:-translate-y-1 transition-all duration-200 no-underline text-inherit">
-                                <div class="aspect-[4/3] overflow-hidden bg-pink-bg">
-                                    {col.image ?
-                                        <img
-                                            src={col.image.url}
-                                            alt={col.image.altText ?? col.title}
-                                            loading="lazy"
-                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                    :   <div class="w-full h-full flex items-center justify-center text-5xl font-bold text-pink/30 font-heading">
-                                            {col.title.charAt(0)}
-                                        </div>
-                                    }
-                                </div>
-                                <div class="flex items-center justify-between px-4 py-3.5">
-                                    <h3 class="font-heading text-sm font-semibold text-neutral-800">{col.title}</h3>
-                                    <span class="text-sm text-pink font-semibold group-hover:translate-x-1 transition-transform duration-200">
-                                        →
-                                    </span>
-                                </div>
-                            </a>
-                        ))}
-                    </div>
+    {collections.length > 0 && (
+        <section class="section bg-cream flex justify-center pb-10">
+            <div class="container">
+                <div class="text-center mb-12 animate-fade-up">
+                    <span class="eyebrow">{t.home.collectionsEyebrow}</span>
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mt-2 mb-4">
+                        {t.home.collectionsTitle}
+                    </h2>
+                    <div class="divider" />
                 </div>
-            </section>
-        )
-    }
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 animate-fade-up">
+                    {collections.slice(0, 4).map(col => (
+                        <a href={`/collections/${col.handle}`} class="group block rounded-2xl overflow-hidden bg-white shadow-card hover:shadow-hover hover:-translate-y-1 transition-all duration-200 no-underline text-inherit">
+                            <div class="aspect-[4/3] overflow-hidden bg-pink-bg">
+                                {col.image ?
+                                    <img src={col.image.url} alt={col.image.altText ?? col.title} loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                :   <div class="w-full h-full flex items-center justify-center text-5xl font-bold text-pink/30 font-heading">{col.title.charAt(0)}</div>
+                                }
+                            </div>
+                            <div class="flex items-center justify-between px-4 py-3.5">
+                                <h3 class="font-heading text-sm font-semibold text-neutral-800">{col.title}</h3>
+                                <span class="text-sm text-pink font-semibold group-hover:translate-x-1 transition-transform duration-200">→</span>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        </section>
+    )}
 
     <!-- A World of Color (photo band) -->
     <section class="relative py-28 md:py-36 overflow-hidden">
@@ -65,15 +53,9 @@ const [products, collections] = await Promise.all([getProducts(8), getCollection
         </div>
         <div class="container relative z-10">
             <div class="max-w-2xl mx-auto text-center animate-fade-up">
-                <span class="eyebrow text-pink-light">A world of color</span>
-                <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mt-3 mb-5">
-                    Life lived in full color
-                </h2>
-                <p class="text-white/85 text-base md:text-lg leading-relaxed">
-                    Dreams do come true, and life reveals its beauty when lived in full color. Through each painting, I
-                    turn fragments of life and fleeting stories into art — echoes of the world translated through my
-                    color palette.
-                </p>
+                <span class="eyebrow text-pink-light">{t.home.colorEyebrow}</span>
+                <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mt-3 mb-5">{t.home.colorTitle}</h2>
+                <p class="text-white/85 text-base md:text-lg leading-relaxed">{t.home.colorText}</p>
             </div>
         </div>
     </section>
@@ -82,41 +64,18 @@ const [products, collections] = await Promise.all([getProducts(8), getCollection
     <section class="section flex justify-center">
         <div class="container">
             <div class="text-center mb-12 animate-fade-up">
-                <span class="eyebrow">Bring color home</span>
-                <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mt-2 mb-3">
-                    Transform your space with art
-                </h2>
-                <p class="text-neutral-500 max-w-md mx-auto text-base">
-                    Every work is crafted to fill your home with light, joy, and meaning.
-                </p>
+                <span class="eyebrow">{t.home.featuredEyebrow}</span>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mt-2 mb-3">{t.home.featuredTitle}</h2>
+                <p class="text-neutral-500 max-w-md mx-auto text-base">{t.home.featuredSub}</p>
                 <div class="divider"></div>
             </div>
-
-            {
-                products.length > 0 ?
-                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-7 animate-fade-up">
-                        {products.map(product => (
-                            <ProductCard product={product} />
-                        ))}
-                    </div>
-                :   <div class="text-center py-16">
-                        <p class="text-neutral-400 text-sm mb-6">Connect Shopify to display your products here.</p>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-5 opacity-40 pointer-events-none">
-                            {Array.from({ length: 4 }).map(() => (
-                                <div class="rounded-2xl overflow-hidden">
-                                    <div class="skeleton aspect-square" />
-                                    <div class="p-4">
-                                        <div class="skeleton h-4 w-3/4 mb-2" />
-                                        <div class="skeleton h-3 w-1/2" />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-            }
-
+            {products.length > 0 ?
+                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-7 animate-fade-up">
+                    {products.map(product => <ProductCard product={product} />)}
+                </div>
+            : null}
             <div class="flex justify-center mt-12 pb-10">
-                <a href="/shop" class="btn btn-outline btn-lg">View All Products</a>
+                <a href="/shop" class="btn btn-outline btn-lg">{t.home.viewAll}</a>
             </div>
         </div>
     </section>
@@ -124,104 +83,32 @@ const [products, collections] = await Promise.all([getProducts(8), getCollection
     <!-- Value props -->
     <section class="section bg-pink-bg">
         <div class="container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {
-                [
-                    {
-                        icon: '🎨',
-                        title: 'Original Art',
-                        desc: 'Every piece is unique, handmade with artisan techniques.'
-                    },
-                    {
-                        icon: '🚚',
-                        title: 'Nationwide Shipping',
-                        desc: 'We ship across Colombia with special packaging to protect your art.'
-                    },
-                    {
-                        icon: '✨',
-                        title: 'Premium Quality',
-                        desc: 'Carefully selected materials so your artwork lasts a lifetime.'
-                    },
-                    {
-                        icon: '💬',
-                        title: 'Personal Support',
-                        desc: 'Direct assistance from May Garcia for your ideal purchase.'
-                    }
-                ].map(({ icon, title, desc }) => (
-                    <div class="px-4 py-8">
-                        <span class="text-4xl block mb-4">{icon}</span>
-                        <h3 class="font-heading text-base font-semibold text-neutral-800 mb-2">{title}</h3>
-                        <p class="text-sm text-neutral-500 leading-relaxed">{desc}</p>
-                    </div>
-                ))
-            }
+            {[
+                { icon: '🎨', title: t.home.propsTitle1, desc: t.home.propsSub1 },
+                { icon: '🚚', title: t.home.propsTitle2, desc: t.home.propsSub2 },
+                { icon: '✨', title: t.home.propsTitle3, desc: t.home.propsSub3 },
+                { icon: '💬', title: t.home.propsTitle4, desc: t.home.propsSub4 },
+            ].map(({ icon, title, desc }) => (
+                <div class="px-4 py-8">
+                    <span class="text-4xl block mb-4">{icon}</span>
+                    <h3 class="font-heading text-base font-semibold text-neutral-800 mb-2">{title}</h3>
+                    <p class="text-sm text-neutral-500 leading-relaxed">{desc}</p>
+                </div>
+            ))}
         </div>
     </section>
 
     <!-- Behind the Canvas (photo band) -->
     <section class="relative py-28 md:py-36 overflow-hidden">
         <div class="absolute inset-0">
-            <img
-                src="/images/05E61361-00F4-4ECD-A7C8-AE1CD9D3B846.jpg"
-                alt=""
-                aria-hidden="true"
-                class="w-full h-full object-cover" />
+            <img src="/images/05E61361-00F4-4ECD-A7C8-AE1CD9D3B846.jpg" alt="" aria-hidden="true" class="w-full h-full object-cover" />
             <div class="absolute inset-0 bg-neutral-900/55"></div>
         </div>
         <div class="container relative z-10">
             <div class="max-w-2xl mx-auto text-center animate-fade-up">
-                <span class="eyebrow text-pink-light">Behind the canvas</span>
-                <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mt-3 mb-5">
-                    Color is at the core of my art
-                </h2>
-                <p class="text-white/85 text-base md:text-lg leading-relaxed">
-                    Vibrant hues bring energy, joy, and a sense of fun to every piece. Nature's beauty serves as a
-                    constant muse, guiding my creative process, while abstract art remains my greatest influence —
-                    letting me express emotions and dreams in ways that words cannot.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="section flex justify-center pb-10">
-        <div class="container">
-            <div class="text-center mb-12 animate-fade-up">
-                <span class="eyebrow">Reviews</span>
-                <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mt-2">What clients say</h2>
-                <div class="divider"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-up">
-                {
-                    [
-                        {
-                            text: 'The artwork arrived perfectly packaged. Exactly as shown in photos — incredibly beautiful. I already want another one!',
-                            author: 'María R.',
-                            location: 'Bogotá'
-                        },
-                        {
-                            text: "May's art transforms any space. I received so many compliments. The customer service was impeccable.",
-                            author: 'Carlos M.',
-                            location: 'Medellín'
-                        },
-                        {
-                            text: 'I bought it as a gift and my friend was delighted. Luxury packaging, arrived ahead of schedule. Highly recommended.',
-                            author: 'Ana L.',
-                            location: 'Cali'
-                        }
-                    ].map(({ text, author, location }) => (
-                        <blockquote class="bg-cream rounded-2xl p-7 border-l-4 border-pink">
-                            <div class="text-amber-400 text-base tracking-widest mb-4" aria-label="5 stars">
-                                ★★★★★
-                            </div>
-                            <p class="text-neutral-600 text-sm leading-relaxed italic mb-5">"{text}"</p>
-                            <footer class="flex flex-col">
-                                <strong class="text-sm font-semibold text-neutral-800">{author}</strong>
-                                <span class="text-xs text-neutral-400">{location}</span>
-                            </footer>
-                        </blockquote>
-                    ))
-                }
+                <span class="eyebrow text-pink-light">{t.home.canvasEyebrow}</span>
+                <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mt-3 mb-5">{t.home.canvasTitle}</h2>
+                <p class="text-white/85 text-base md:text-lg leading-relaxed">{t.home.canvasText}</p>
             </div>
         </div>
     </section>
@@ -230,10 +117,10 @@ const [products, collections] = await Promise.all([getProducts(8), getCollection
     <section class="py-20 bg-gradient-to-br from-pink to-pink-dark">
         <div class="container flex flex-col sm:flex-row items-center justify-between gap-6 flex-wrap">
             <div>
-                <h2 class="text-2xl md:text-3xl font-heading font-bold text-white mb-2">Let's create something beautiful together</h2>
-                <p class="text-white/80 text-base">I'd be honored to transform your ideas into meaningful art. Tell me what you have in mind.</p>
+                <h2 class="text-2xl md:text-3xl font-heading font-bold text-white mb-2">{t.home.ctaTitle}</h2>
+                <p class="text-white/80 text-base">{t.home.ctaSub}</p>
             </div>
-            <a href="/contact" class="btn btn-dark btn-lg flex-shrink-0">Get in Touch</a>
+            <a href="/contact" class="btn btn-dark btn-lg flex-shrink-0">{t.home.ctaBtn}</a>
         </div>
     </section>
 </Layout>

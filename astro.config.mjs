@@ -11,4 +11,11 @@ export default defineConfig({
     react(),
     tailwind({ applyBaseStyles: false }),
   ],
+  i18n: {
+    defaultLocale: 'es',
+    locales: ['es', 'en'],
+    routing: {
+      prefixDefaultLocale: false,  // /shop = Spanish, /en/shop = English
+    },
+  },
 });

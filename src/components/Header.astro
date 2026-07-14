@@ -1,13 +1,21 @@
 ---
 import CartCount from './react/CartCount'
+import { getLang, switchLangUrl, useTranslations } from '../i18n/utils'
+
+const lang = getLang(Astro.url)
+const t    = useTranslations(lang)
 
 const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/shop', label: 'Shop' },
-    { href: '/collections', label: 'Collections' },
-    { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' }
+    { href: lang === 'en' ? '/en/'            : '/',            label: t.nav.home },
+    { href: lang === 'en' ? '/en/shop'        : '/shop',        label: t.nav.shop },
+    { href: lang === 'en' ? '/en/collections' : '/collections', label: t.nav.collections },
+    { href: lang === 'en' ? '/en/about'       : '/about',       label: t.nav.about },
+    { href: lang === 'en' ? '/en/contact'     : '/contact',     label: t.nav.contact },
 ]
+
+const otherLang = lang === 'es' ? 'en' : 'es'
+const otherUrl  = switchLangUrl(Astro.url, otherLang)
+const otherLabel = lang === 'es' ? 'EN' : 'ES'
 ---
 
 <header
@@ -41,6 +49,14 @@ const navLinks = [
 
         <!-- Actions -->
         <div class="flex-shrink-0 flex items-center gap-1 ml-auto">
+            <!-- Language switcher -->
+            <a
+                href={otherUrl}
+                class="w-10 h-10 flex items-center justify-center rounded-lg text-xs font-bold text-neutral-600 hover:bg-neutral-100 hover:text-pink transition-colors"
+                aria-label={`Switch to ${otherLang}`}>
+                {otherLabel}
+            </a>
+
             <!-- Search -->
             <button
                 id="search-toggle"

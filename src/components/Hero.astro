@@ -1,5 +1,10 @@
 ---
+import { useTranslations } from '../i18n/utils'
+import type { Lang } from '../i18n/utils'
 
+interface Props { lang?: Lang }
+const { lang = 'es' } = Astro.props
+const t = useTranslations(lang)
 ---
 
 <style>
@@ -25,22 +30,20 @@
         <div class="animate-fade-up">
             <span
                 class="inline-block bg-pink-bg text-pink text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-6">
-                ✦ Original art from Colombia
+                {t.hero.badge}
             </span>
 
             <h1 class="text-5xl lg:text-6xl font-heading font-bold text-neutral-800 leading-[1.1] mb-5">
-                Life is better with <span class="text-pink">color</span>
+                {t.hero.title} <span class="text-pink">{t.hero.titleHighlight}</span>
             </h1>
 
             <p class="text-lg text-neutral-500 leading-relaxed max-w-md mb-8">
-                I'm May García, a self-taught artist inspired by the beauty of nature, the rhythm of music, and the
-                magic of dreams. Each painting is a burst of color — a reflection of emotion and energy that speaks from
-                the heart.
+                {t.hero.bio}
             </p>
 
             <div class="flex gap-4 flex-wrap">
-                <a href="/shop" class="btn btn-primary btn-lg">Browse Collection</a>
-                <a href="/about" class="btn btn-outline btn-lg">Meet May</a>
+                <a href={lang === 'en' ? '/en/shop' : '/shop'} class="btn btn-primary btn-lg">{t.hero.cta_shop}</a>
+                <a href={lang === 'en' ? '/en/about' : '/about'} class="btn btn-outline btn-lg">{t.hero.cta_about}</a>
             </div>
         </div>
 
@@ -62,14 +65,14 @@
                 <!-- Floating badge — top left -->
                 <div
                     class="absolute top-[10%] -left-5 flex items-center gap-2 bg-white rounded-full px-4 py-2.5 shadow-hover text-sm font-semibold text-neutral-700 animate-float whitespace-nowrap">
-                    <span>🎨</span><span>Original Art</span>
+                    <span>🎨</span><span>{t.hero.floatArt}</span>
                 </div>
 
                 <!-- Floating badge — bottom right -->
                 <div
                     class="absolute bottom-[15%] -right-5 flex items-center gap-2 bg-white rounded-full px-4 py-2.5 shadow-hover text-sm font-semibold text-neutral-700 animate-float whitespace-nowrap"
                     style="animation-delay: 1.5s">
-                    <span>🚚</span><span>Nationwide Shipping</span>
+                    <span>🚚</span><span>{t.hero.floatShipping}</span>
                 </div>
             </div>
         </div>
@@ -79,7 +82,7 @@
     <div
         class="scroll-indicator absolute bottom-8 left-1/2 hidden md:flex flex-col items-center gap-1.5 text-neutral-400 text-xs font-medium"
         aria-hidden="true">
-        <span>Scroll</span>
+        <span>{t.hero.scroll}</span>
         <svg
             width="16"
             height="16"
