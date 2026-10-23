@@ -1,18 +1,20 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollections } from '../../lib/shopify';
+import { useTranslations } from '../../i18n/utils';
 
+const t = useTranslations('es');
 const collections = await getCollections();
 ---
 
 <Layout
-  title="Collections — May Garcia"
-  description="Browse the May Garcia collections. Original art, illustrations and unique handmade pieces by category."
+  title="Colecciones — May Garcia"
+  description="Explora las colecciones de May García. Arte original, ilustraciones y piezas únicas hechas a mano por categoría."
 >
   <div class="bg-gradient-to-br from-pink-bg to-white border-b border-neutral-100 py-12 text-center">
     <div class="container">
-      <h1 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-2">Collections</h1>
-      <p class="text-neutral-500">Browse our work by category</p>
+      <h1 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-2">{t.collections.title}</h1>
+      <p class="text-neutral-500">{t.collections.subtitle}</p>
     </div>
   </div>
 
@@ -48,9 +50,9 @@ const collections = await getCollections();
         </div>
       ) : (
         <div class="flex flex-col items-center justify-center py-24 gap-4 text-center">
-          <h2 class="text-xl font-heading font-bold text-neutral-700">No collections yet</h2>
-          <p class="text-neutral-400 max-w-xs">Collections will appear here once they're published.</p>
-          <a href="/shop" class="btn btn-primary mt-2">Browse all products</a>
+          <h2 class="text-xl font-heading font-bold text-neutral-700">{t.collections.noneYet}</h2>
+          <p class="text-neutral-400 max-w-xs">{t.collections.noneYetSub}</p>
+          <a href="/shop" class="btn btn-primary mt-2">{t.collections.browseAll}</a>
         </div>
       )}
     </div>

@@ -2,12 +2,19 @@
 import type { Product } from '../types/shopify';
 import { formatPrice } from '../lib/shopify';
 import { cartStore } from '../store/cart';
+import { getLang, useTranslations } from '../i18n/utils';
 
 interface Props {
   product: Product;
 }
 
 const { product } = Astro.props;
+const lang = getLang(Astro.url);
+const t = useTranslations(lang);
+const prefix = lang === 'en' ? '/en' : '';
+const labels = lang === 'en'
+  ? { new: 'New', sale: 'Sale', added: 'added to cart', error: 'Could not add to cart. Try again.' }
+  : { new: 'Nuevo', sale: 'Oferta', added: 'agregado al carrito', error: 'No se pudo agregar al carrito. Inténtalo de nuevo.' };
 
 const minPrice = product.priceRange.minVariantPrice;
 const maxPrice = product.priceRange.maxVariantPrice;
@@ -18,7 +25,7 @@ const firstVariantId = product.variants.nodes[0]?.id ?? '';
 ---
 
 <article class="group flex flex-col rounded-2xl overflow-hidden bg-white shadow-card hover:shadow-hover hover:-translate-y-1 transition-all duration-200">
-  <a href={`/shop/${product.handle}`} class="flex flex-col flex-1 no-underline text-inherit" aria-label={product.title}>
+  <a href={`${prefix}/shop/${product.handle}`} class="flex flex-col flex-1 no-underline text-inherit" aria-label={product.title}>
 
     <!-- Image -->
     <div class="relative overflow-hidden aspect-square bg-cream">
@@ -45,20 +52,20 @@ const firstVariantId = product.variants.nodes[0]?.id ?? '';
       <!-- Badges -->
       <div class="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
         {!product.availableForSale && (
-          <span class="badge bg-black/65 text-white text-[10px] px-2.5 py-1 rounded-full font-bold">Sold Out</span>
+          <span class="badge bg-black/65 text-white text-[10px] px-2.5 py-1 rounded-full font-bold">{t.shop.soldOut}</span>
         )}
         {isNew && product.availableForSale && (
-          <span class="badge bg-pink text-white text-[10px] px-2.5 py-1 rounded-full font-bold">New</span>
+          <span class="badge bg-pink text-white text-[10px] px-2.5 py-1 rounded-full font-bold">{labels.new}</span>
         )}
         {hasDiscount && product.availableForSale && (
-          <span class="badge bg-orange-500 text-white text-[10px] px-2.5 py-1 rounded-full font-bold">Sale</span>
+          <span class="badge bg-orange-500 text-white text-[10px] px-2.5 py-1 rounded-full font-bold">{labels.sale}</span>
         )}
       </div>
 
       <!-- Quick add overlay -->
       {product.availableForSale && (
         <div class="absolute bottom-0 inset-x-0 bg-pink/90 text-white text-center py-3 text-sm font-semibold translate-y-full group-hover:translate-y-0 transition-transform duration-300" aria-hidden="true">
-          Add to Cart
+          {t.shop.addToCart}
         </div>
       )}
     </div>
@@ -83,18 +90,21 @@ const firstVariantId = product.variants.nodes[0]?.id ?? '';
       class="mx-4 mb-4 flex items-center justify-center gap-2 bg-pink hover:bg-pink-dark text-white text-xs font-bold py-2.5 rounded-lg transition-all duration-200 hover:-translate-y-px cursor-pointer border-0 add-cart-btn"
       data-variant-id={firstVariantId}
       data-product-title={product.title}
-      aria-label={`Add ${product.title} to cart`}
+      aria-label={`${t.shop.addToCart}: ${product.title}`}
+      data-adding={t.shop.adding}
+      data-added={labels.added}
+      data-error={labels.error}
     >
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
         <line x1="3" y1="6" x2="21" y2="6"/>
         <path d="M16 10a4 4 0 0 1-8 0"/>
       </svg>
-      Add to Cart
+      {t.shop.addToCart}
     </button>
   ) : (
     <div class="mx-4 mb-4 text-center bg-neutral-100 text-neutral-400 text-xs font-bold py-2.5 rounded-lg cursor-not-allowed">
-      Sold Out
+      {t.shop.soldOut}
     </div>
   )}
 </article>
@@ -108,7 +118,7 @@ const firstVariantId = product.variants.nodes[0]?.id ?? '';
       const originalHTML = btn.innerHTML;
 
       btn.disabled   = true;
-      btn.textContent = 'Adding…';
+      btn.textContent = btn.dataset.adding ?? 'Adding…';
 
       const existingCart = (window as any).__cartStore?.get();
 
@@ -125,14 +135,14 @@ const firstVariantId = product.variants.nodes[0]?.id ?? '';
 
         const toast = document.getElementById('toast');
         if (toast) {
-          toast.textContent = `✓ ${productTitle} added to cart`;
+          toast.textContent = `✓ ${productTitle} ${btn.dataset.added}`;
           toast.classList.add('show');
           setTimeout(() => toast.classList.remove('show'), 3000);
         }
       } catch {
         const toast = document.getElementById('toast');
         if (toast) {
-          toast.textContent = 'Could not add to cart. Try again.';
+          toast.textContent = btn.dataset.error ?? '';
           toast.classList.add('show');
           setTimeout(() => toast.classList.remove('show'), 3000);
         }

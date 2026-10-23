@@ -4,9 +4,13 @@ import ProductCard from '../../components/ProductCard.astro';
 import ProductGallery from '../../components/react/ProductGallery';
 import VariantSelector from '../../components/react/VariantSelector';
 import AddToCart from '../../components/react/AddToCart';
+import { useTranslations } from '../../i18n/utils';
 import { getProductByHandle, getProducts, formatPrice } from '../../lib/shopify';
 
 export const prerender = false;
+
+const lang = 'es' as const;
+const t = useTranslations(lang);
 
 const { handle } = Astro.params;
 if (!handle) return Astro.redirect('/shop');
@@ -38,7 +42,7 @@ const hasRange = minPrice.amount !== maxPrice.amount;
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
         </svg>
-        Back to shop
+        {t.shop.backToShop}
       </a>
 
       <!-- Product layout -->
@@ -61,17 +65,17 @@ const hasRange = minPrice.amount !== maxPrice.amount;
 
           <div class="flex items-center gap-3 mb-3">
             <span class="font-heading text-2xl font-bold text-pink">
-              {hasRange ? `From ${displayPrice}` : displayPrice}
+              {hasRange ? `${t.shop.fromPrice} ${displayPrice}` : displayPrice}
             </span>
             {!product.availableForSale && (
-              <span class="badge bg-neutral-100 text-neutral-500 px-3 py-1 rounded-full text-xs font-bold">Sold Out</span>
+              <span class="badge bg-neutral-100 text-neutral-500 px-3 py-1 rounded-full text-xs font-bold">{t.shop.soldOut}</span>
             )}
           </div>
 
           <!-- Rating -->
           <div class="flex items-center gap-2 mb-6">
             <span class="text-amber-400 tracking-widest text-sm" aria-label="5 stars">★★★★★</span>
-            <span class="text-xs text-neutral-400">(12 reviews)</span>
+            <span class="text-xs text-neutral-400">(12 reseñas)</span>
           </div>
 
           <!-- Variants (React — interactive) -->
@@ -97,6 +101,7 @@ const hasRange = minPrice.amount !== maxPrice.amount;
               client:load
               variantId={product.variants.nodes[0]?.id ?? ''}
               productTitle={product.title}
+              lang={lang}
               available={product.availableForSale}
             />
           </div>
@@ -113,9 +118,9 @@ const hasRange = minPrice.amount !== maxPrice.amount;
           <!-- Shipping info -->
           <div class="rounded-2xl bg-cream p-5 flex flex-col gap-3">
             {[
-              { icon: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z M12,10m-3,0a3,3 0 1,0 6,0a3,3 0 1,0 -6,0', label: 'Nationwide shipping across Colombia' },
-              { icon: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', label: '100% secure checkout' },
-              { icon: 'M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z', label: 'Special art packaging' },
+              { icon: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z M12,10m-3,0a3,3 0 1,0 6,0a3,3 0 1,0 -6,0', label: t.shop.shipping },
+              { icon: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', label: t.shop.secure },
+              { icon: 'M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z', label: t.shop.packaging },
             ].map(({ icon, label }) => (
               <div class="flex items-center gap-3 text-sm text-neutral-500">
                 <svg class="w-4 h-4 text-pink flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -135,8 +140,8 @@ const hasRange = minPrice.amount !== maxPrice.amount;
     <section class="section bg-cream">
       <div class="container">
         <div class="text-center mb-12">
-          <span class="eyebrow">You may also like</span>
-          <h2 class="text-2xl md:text-3xl font-heading font-bold text-neutral-800 mt-2">Related works</h2>
+          <span class="eyebrow">{t.shop.relatedEyebrow}</span>
+          <h2 class="text-2xl md:text-3xl font-heading font-bold text-neutral-800 mt-2">{t.shop.relatedTitle}</h2>
           <div class="divider"></div>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-5 lg:gap-7">

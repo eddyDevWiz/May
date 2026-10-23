@@ -1,0 +1,59 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import { getCollectionByHandle } from '../../../lib/shopify';
+import { useTranslations } from '../../../i18n/utils';
+
+export const prerender = false;
+
+const t = useTranslations('en');
+const { handle } = Astro.params;
+if (!handle) return Astro.redirect('/en/collections');
+
+const collection = await getCollectionByHandle(handle, 24);
+if (!collection) return Astro.redirect('/en/collections');
+
+const products = collection.products?.nodes ?? [];
+---
+
+<Layout
+  title={`${collection.title} — May Garcia`}
+  description={collection.description?.slice(0, 155) || `Explore the ${collection.title} collection by May Garcia.`}
+  image={collection.image?.url}
+>
+  <div class="bg-gradient-to-br from-pink-bg to-white border-b border-neutral-100 py-12 text-center">
+    <div class="container">
+      <h1 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-2">{collection.title}</h1>
+      {collection.description && (
+        <p class="text-neutral-500 max-w-xl mx-auto">{collection.description}</p>
+      )}
+    </div>
+  </div>
+
+  <section class="section flex justify-center">
+    <div class="container">
+      <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
+        <a href="/en/collections" class="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-pink">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          {t.collections.allCollections}
+        </a>
+        <p class="text-sm text-neutral-400">
+          {products.length} {products.length === 1 ? t.collections.product : t.collections.products}
+        </p>
+      </div>
+
+      {products.length > 0 ? (
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-7">
+          {products.map(product => <ProductCard product={product} />)}
+        </div>
+      ) : (
+        <div class="flex flex-col items-center justify-center py-24 gap-4 text-center">
+          <h2 class="text-xl font-heading font-bold text-neutral-700">{t.collections.noProducts}</h2>
+          <a href="/en/shop" class="btn btn-primary mt-2">{t.collections.browseAll}</a>
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

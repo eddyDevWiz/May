@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import { cartStore } from '../../store/cart';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/utils';
 
 interface Props {
   variantId: string;
   productTitle: string;
   available: boolean;
+  lang?: Lang;
 }
 
-export default function AddToCart({ variantId, productTitle, available }: Props) {
+export default function AddToCart({ variantId, productTitle, available, lang = 'es' }: Props) {
+  const t = useTranslations(lang);
+  const msg = lang === 'en'
+    ? { added: 'added to cart', error: 'Could not add to cart. Please try again.', wrong: 'Something went wrong. Please try again.' }
+    : { added: 'agregado al carrito', error: 'No se pudo agregar al carrito. Inténtalo de nuevo.', wrong: 'Algo salió mal. Inténtalo de nuevo.' };
   const [loading, setLoading] = useState(false);
   const [qty, setQty] = useState(1);
 
@@ -29,9 +36,9 @@ export default function AddToCart({ variantId, productTitle, available }: Props)
       const data = await res.json();
       cartStore.set(data.cart);
       window.dispatchEvent(new Event('cart:open'));
-      showToast(`✓ ${productTitle} added to cart`);
+      showToast(`✓ ${productTitle} ${msg.added}`);
     } catch {
-      showToast('Could not add to cart. Please try again.');
+      showToast(msg.error);
     } finally {
       setLoading(false);
     }
@@ -51,7 +58,7 @@ export default function AddToCart({ variantId, productTitle, available }: Props)
       cartStore.set(data.cart);
       if (data.cart?.checkoutUrl) window.location.href = data.cart.checkoutUrl;
     } catch {
-      showToast('Something went wrong. Please try again.');
+      showToast(msg.wrong);
       setLoading(false);
     }
   }
@@ -59,7 +66,7 @@ export default function AddToCart({ variantId, productTitle, available }: Props)
   if (!available) {
     return (
       <button disabled className="btn btn-lg w-full justify-center bg-neutral-100 text-neutral-400 border-neutral-100 cursor-not-allowed">
-        Sold Out
+        {t.shop.soldOut}
       </button>
     );
   }
@@ -99,7 +106,7 @@ export default function AddToCart({ variantId, productTitle, available }: Props)
               <path d="M16 10a4 4 0 0 1-8 0"/>
             </svg>
           )}
-          {loading ? 'Adding…' : 'Add to Cart'}
+          {loading ? t.shop.adding : t.shop.addToCart}
         </button>
       </div>
 
@@ -109,7 +116,7 @@ export default function AddToCart({ variantId, productTitle, available }: Props)
         disabled={loading}
         className="btn btn-outline btn-lg w-full justify-center"
       >
-        Buy Now
+        {t.shop.buyNow}
       </button>
     </div>
   );

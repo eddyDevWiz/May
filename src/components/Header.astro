@@ -230,10 +230,13 @@ const otherLabel = lang === 'es' ? 'EN' : 'ES'
     })
 
     // Highlight active nav link
-    const currentPath = window.location.pathname
+    const normalize = (p: string) => (p.length > 1 ? p.replace(/\/+$/, '') : p)
+    const currentPath = normalize(window.location.pathname)
+    const homePaths = ['/', '/en']
     document.querySelectorAll('nav a[href]').forEach(link => {
-        const href = link.getAttribute('href')!
-        if (href === currentPath || (href !== '/' && currentPath.startsWith(href))) {
+        const href = normalize(link.getAttribute('href')!)
+        const isHome = homePaths.includes(href)
+        if (href === currentPath || (!isHome && currentPath.startsWith(href + '/'))) {
             link.classList.add('text-pink', 'bg-pink-bg')
         }
     })

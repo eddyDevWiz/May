@@ -2,9 +2,11 @@
 import Layout from '../../layouts/Layout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import { getCollectionByHandle } from '../../lib/shopify';
+import { useTranslations } from '../../i18n/utils';
 
 export const prerender = false;
 
+const t = useTranslations('es');
 const { handle } = Astro.params;
 if (!handle) return Astro.redirect('/collections');
 
@@ -16,7 +18,7 @@ const products = collection.products?.nodes ?? [];
 
 <Layout
   title={`${collection.title} — May Garcia`}
-  description={collection.description?.slice(0, 155) || `Explore the ${collection.title} collection by May Garcia.`}
+  description={collection.description?.slice(0, 155) || `Explora la colección ${collection.title} de May García.`}
   image={collection.image?.url}
 >
   <div class="bg-gradient-to-br from-pink-bg to-white border-b border-neutral-100 py-12 text-center">
@@ -35,10 +37,10 @@ const products = collection.products?.nodes ?? [];
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
           </svg>
-          All collections
+          {t.collections.allCollections}
         </a>
         <p class="text-sm text-neutral-400">
-          {products.length} {products.length === 1 ? 'product' : 'products'}
+          {products.length} {products.length === 1 ? t.collections.product : t.collections.products}
         </p>
       </div>
 
@@ -48,8 +50,8 @@ const products = collection.products?.nodes ?? [];
         </div>
       ) : (
         <div class="flex flex-col items-center justify-center py-24 gap-4 text-center">
-          <h2 class="text-xl font-heading font-bold text-neutral-700">No products in this collection yet</h2>
-          <a href="/shop" class="btn btn-primary mt-2">Browse all products</a>
+          <h2 class="text-xl font-heading font-bold text-neutral-700">{t.collections.noProducts}</h2>
+          <a href="/shop" class="btn btn-primary mt-2">{t.collections.browseAll}</a>
         </div>
       )}
     </div>

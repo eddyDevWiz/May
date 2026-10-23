@@ -1,117 +1,60 @@
 ---
-import Layout from '../layouts/Layout.astro'
+import Layout from '../layouts/Layout.astro';
+import { useTranslations } from '../i18n/utils';
+
+const t = useTranslations('es');
 ---
 
-<Layout
-    title="About — May Garcia"
-    description="Meet May Garcia, Colombian artist specializing in contemporary art and unique illustrations.">
-    <!-- Header -->
+<Layout title="Sobre mí — May Garcia" description="Conoce a May García, artista colombiana especializada en arte contemporáneo e ilustraciones únicas.">
     <div class="bg-gradient-to-br from-pink-bg to-white border-b border-neutral-100 py-12 text-center">
         <div class="container">
-            <h1 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-2">About Me</h1>
-            <p class="text-neutral-500">Artist, creator, Colombian</p>
+            <h1 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-2">{t.nav.about}</h1>
+            <p class="text-neutral-500">{t.about.tagline}</p>
         </div>
     </div>
 
     <section class="section">
         <div class="container grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <!-- Image -->
             <div class="relative max-w-md mx-auto w-full">
                 <div class="rounded-3xl overflow-hidden shadow-[0_24px_64px_rgba(255,70,145,0.18)]">
                     <div class="aspect-[4/5] bg-pink-bg">
-                        <img
-                            src="/images/IMG_0133.jpg"
-                            alt="May García painting in her studio"
-                            width="400"
-                            height="500"
-                            class="w-full h-full object-cover" />
+                        <img src="/images/IMG_0133.jpg" alt="May García pintando en su estudio" width="400" height="500" class="w-full h-full object-cover" />
                     </div>
                 </div>
-
-                <!-- Floating badge -->
-                <div
-                    class="absolute -bottom-5 -right-3 flex items-center gap-3 bg-white rounded-2xl px-5 py-3.5 shadow-hover">
+                <div class="absolute -bottom-5 -right-3 flex items-center gap-3 bg-white rounded-2xl px-5 py-3.5 shadow-hover">
                     <span class="text-2xl">🎨</span>
                     <div class="flex flex-col">
                         <strong class="text-sm font-semibold text-neutral-800">May Garcia</strong>
-                        <small class="text-xs text-neutral-400">Visual Artist</small>
+                        <small class="text-xs text-neutral-400">{t.about.badge}</small>
                     </div>
                 </div>
             </div>
 
-            <!-- Content -->
             <div class="py-10">
-                <span class="eyebrow mb-4 block">The heart behind the colors</span>
-                <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-6">
-                    Art that speaks<br />from the heart
-                </h2>
-
-                <p class="text-neutral-500 leading-relaxed mb-4">
-                    I'm May García, a self-taught artist inspired by the beauty of nature, the rhythm of music, and the
-                    magic of dreams. Each painting is a burst of color — a reflection of emotion and energy that speaks
-                    from the heart.
-                </p>
-
-                <p class="text-neutral-500 leading-relaxed mb-8">
-                    Nature's colors, the rhythm of music, and the emotional pulse of humanity guide my process. I create
-                    to find peace amid the noise and invite others to feel that same pause through my work.
-                </p>
-
-                <!-- Values -->
+                <span class="eyebrow mb-4 block">{t.about.eyebrow}</span>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mb-6">{t.about.title}</h2>
+                <p class="text-neutral-500 leading-relaxed mb-4">{t.about.p1}</p>
+                <p class="text-neutral-500 leading-relaxed mb-8">{t.about.p2}</p>
                 <div class="bg-cream rounded-2xl p-6 flex flex-col gap-5 mb-8">
-                    {
-                        [
-                            {
-                                icon: '🌺',
-                                title: 'Authenticity',
-                                desc: 'Every piece is 100% original, handmade with premium materials.'
-                            },
-                            {
-                                icon: '💡',
-                                title: 'Inspiration',
-                                desc: 'I draw inspiration from nature, emotions and Latin American culture.'
-                            },
-                            {
-                                icon: '🤝',
-                                title: 'Connection',
-                                desc: 'I create art to connect people with emotions and special spaces.'
-                            }
-                        ].map(({ icon, title, desc }) => (
-                            <div class="flex items-start gap-4">
-                                <span class="text-2xl flex-shrink-0 mt-0.5">{icon}</span>
-                                <div>
-                                    <h4 class="font-heading text-sm font-semibold text-neutral-800 mb-1">{title}</h4>
-                                    <p class="text-sm text-neutral-500 leading-relaxed">{desc}</p>
-                                </div>
+                    {[
+                        { icon: '🌺', title: t.about.val1Title, desc: t.about.val1Desc },
+                        { icon: '💡', title: t.about.val2Title, desc: t.about.val2Desc },
+                        { icon: '🤝', title: t.about.val3Title, desc: t.about.val3Desc },
+                    ].map(({ icon, title, desc }) => (
+                        <div class="flex items-start gap-4">
+                            <span class="text-2xl flex-shrink-0 mt-0.5">{icon}</span>
+                            <div>
+                                <h4 class="font-heading text-sm font-semibold text-neutral-800 mb-1">{title}</h4>
+                                <p class="text-sm text-neutral-500 leading-relaxed">{desc}</p>
                             </div>
-                        ))
-                    }
+                        </div>
+                    ))}
                 </div>
-
                 <div class="flex gap-4 flex-wrap">
-                    <a href="/shop" class="btn btn-primary btn-lg">View My Work</a>
-                    <a href="/contact" class="btn btn-outline btn-lg">Get in Touch</a>
+                    <a href="/shop" class="btn btn-primary btn-lg">{t.about.cta_shop}</a>
+                    <a href="/contact" class="btn btn-outline btn-lg">{t.about.cta_contact}</a>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Stats -->
-    <section class="py-14 bg-pink">
-        <div class="container grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {
-                [
-                    { number: '5+', label: 'Years creating' },
-                    { number: '200+', label: 'Unique pieces' },
-                    { number: '500+', label: 'Happy clients' },
-                    { number: '15+', label: 'Exhibitions' }
-                ].map(({ number, label }) => (
-                    <div class="flex flex-col gap-1">
-                        <span class="font-heading text-4xl font-bold text-white">{number}</span>
-                        <span class="text-sm text-white/75">{label}</span>
-                    </div>
-                ))
-            }
         </div>
     </section>
 </Layout>

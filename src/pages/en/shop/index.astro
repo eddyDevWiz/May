@@ -41,3 +41,29 @@ const products = await getProducts(24);
         </div>
     </section>
 </Layout>
+
+<script>
+    const select = document.getElementById('sort-select') as HTMLSelectElement
+    const grid = document.getElementById('products-grid')
+
+    select?.addEventListener('change', () => {
+        if (!grid) return
+        const cards = Array.from(grid.querySelectorAll('article'))
+        const val = select.value
+
+        cards.sort((a, b) => {
+            const titleA = a.querySelector('h3')?.textContent ?? ''
+            const titleB = b.querySelector('h3')?.textContent ?? ''
+            const priceA = parseFloat(a.querySelector('.text-pink')?.textContent?.replace(/[^\d.]/g, '') ?? '0')
+            const priceB = parseFloat(b.querySelector('.text-pink')?.textContent?.replace(/[^\d.]/g, '') ?? '0')
+
+            if (val === 'title-asc') return titleA.localeCompare(titleB, document.documentElement.lang)
+            if (val === 'title-desc') return titleB.localeCompare(titleA, document.documentElement.lang)
+            if (val === 'price-asc') return priceA - priceB
+            if (val === 'price-desc') return priceB - priceA
+            return 0
+        })
+
+        cards.forEach(card => grid.appendChild(card))
+    })
+</script>
