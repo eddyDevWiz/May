@@ -13,8 +13,8 @@ interface Props {
 export default function AddToCart({ variantId, productTitle, available, lang = 'es' }: Props) {
   const t = useTranslations(lang);
   const msg = lang === 'en'
-    ? { added: 'added to cart', error: 'Could not add to cart. Please try again.', wrong: 'Something went wrong. Please try again.' }
-    : { added: 'agregado al carrito', error: 'No se pudo agregar al carrito. Inténtalo de nuevo.', wrong: 'Algo salió mal. Inténtalo de nuevo.' };
+    ? { added: 'added to cart', error: 'Could not add to cart. Please try again.', outOfStock: 'Sorry, this piece is out of stock.', wrong: 'Something went wrong. Please try again.' }
+    : { added: 'agregado al carrito', error: 'No se pudo agregar al carrito. Inténtalo de nuevo.', outOfStock: 'Lo sentimos, esta pieza está agotada.', wrong: 'Algo salió mal. Inténtalo de nuevo.' };
   const [loading, setLoading] = useState(false);
   const [qty, setQty] = useState(1);
 
@@ -32,6 +32,7 @@ export default function AddToCart({ variantId, productTitle, available, lang = '
           cartId: existingCart?.id,
         }),
       });
+      if (res.status === 409) { showToast(msg.outOfStock); return; }
       if (!res.ok) throw new Error();
       const data = await res.json();
       cartStore.set(data.cart);
@@ -53,6 +54,7 @@ export default function AddToCart({ variantId, productTitle, available, lang = '
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ variantId, quantity: qty, cartId: existingCart?.id }),
       });
+      if (res.status === 409) { showToast(msg.outOfStock); setLoading(false); return; }
       if (!res.ok) throw new Error();
       const data = await res.json();
       cartStore.set(data.cart);

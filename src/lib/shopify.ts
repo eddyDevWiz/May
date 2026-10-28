@@ -78,18 +78,30 @@ export async function getCollectionByHandle(handle: string, productsFirst = 12):
   return data?.collection ?? null;
 }
 
+export class CartStockError extends Error {}
+
+// Shopify silently drops lines it can't sell and only reports it in `warnings`.
+function assertCartMutation(result: any) {
+  const userError = result?.userErrors?.[0];
+  if (userError) throw new Error(userError.message);
+  const stock = result?.warnings?.find((w: any) => /OUT_OF_STOCK|NOT_ENOUGH_STOCK/.test(w.code));
+  if (stock) throw new CartStockError(stock.message);
+}
+
 export async function createCart(lines: { merchandiseId: string; quantity: number }[]) {
   const query = `
     mutation CartCreate($lines: [CartLineInput!]!) {
       cartCreate(input: { lines: $lines }) {
         cart { ...CartFragment }
         userErrors { field message }
+        warnings { code message }
       }
     }
     ${CART_FRAGMENT}
   `;
   const { data, errors } = await client.request(query, { variables: { lines } });
   if (errors) throw new Error(errors.message);
+  assertCartMutation(data?.cartCreate);
   return data?.cartCreate?.cart;
 }
 
@@ -99,12 +111,14 @@ export async function addCartLines(cartId: string, lines: { merchandiseId: strin
       cartLinesAdd(cartId: $cartId, lines: $lines) {
         cart { ...CartFragment }
         userErrors { field message }
+        warnings { code message }
       }
     }
     ${CART_FRAGMENT}
   `;
   const { data, errors } = await client.request(query, { variables: { cartId, lines } });
   if (errors) throw new Error(errors.message);
+  assertCartMutation(data?.cartLinesAdd);
   return data?.cartLinesAdd?.cart;
 }
 
