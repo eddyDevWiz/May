@@ -24,10 +24,14 @@ const otherLabel = lang === 'es' ? 'EN' : 'ES'
     <div class="container flex items-center gap-8 h-[72px]">
         <!-- Logo -->
         <a
-            href="/"
-            class="flex-shrink-0 font-heading font-bold text-xl text-neutral-800 hover:text-pink transition-colors"
+            href={lang === 'en' ? '/en/' : '/'}
+            class="flex-shrink-0 flex items-center"
             aria-label="May Garcia - Home">
-            May Garcia
+            <img
+                src="/images/Logo_Mesa-de-trabajo-1-copia-2-3-e1733774355594.png"
+                alt="May Garcia"
+                class="h-14 w-auto"
+            />
         </a>
 
         <!-- Desktop Nav -->
