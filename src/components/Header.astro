@@ -20,17 +20,17 @@ const otherLabel = lang === 'es' ? 'EN' : 'ES'
 
 <header
     id="site-header"
-    class="sticky top-0 z-[900] px-8 bg-white/[0.97] backdrop-blur-md border-b border-neutral-100 transition-shadow duration-300">
-    <div class="container flex items-center gap-8 h-[72px]">
+    class="sticky top-0 z-[900] px-4 sm:px-8 bg-white/[0.97] backdrop-blur-md border-b border-neutral-100 transition-shadow duration-300">
+    <div class="container flex items-center gap-2 sm:gap-8 h-[72px]">
         <!-- Logo -->
         <a
             href={lang === 'en' ? '/en/' : '/'}
-            class="flex-shrink-0 flex items-center"
+            class="min-w-0 flex-shrink flex items-center"
             aria-label="May Garcia - Home">
             <img
                 src="/images/Logo_Mesa-de-trabajo-1-copia-2-3-e1733774355594.png"
                 alt="May Garcia"
-                class="h-14 w-auto"
+                class="h-11 sm:h-14 w-auto max-w-full object-contain"
             />
         </a>
 
