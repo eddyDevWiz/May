@@ -14,7 +14,7 @@
   h1, h2, h3, h4, h5, h6 { @apply font-heading font-semibold leading-tight; }
 
   a { @apply transition-colors duration-200; }
-  a:not(.btn):hover { @apply text-pink; }
+  a:where(:not(.btn)):hover { @apply text-pink; }
 
   img, picture, video, canvas, svg { @apply block max-w-full; }
 

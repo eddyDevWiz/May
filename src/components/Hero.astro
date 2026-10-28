@@ -25,7 +25,7 @@ const t = useTranslations(lang)
         </div>
     </div>
 
-    <div class="container relative z-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-20">
+    <div class="container relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] items-center gap-16 py-20">
         <!-- Text content -->
         <div class="animate-fade-up">
             <span
@@ -49,7 +49,7 @@ const t = useTranslations(lang)
 
         <!-- Image / placeholder -->
         <div class="flex justify-center animate-fade-up" style="animation-delay: 0.15s">
-            <div class="relative w-full max-w-[420px]">
+            <div class="relative w-full max-w-[420px] lg:max-w-[min(560px,calc((100vh_-_240px)*0.8))]">
                 <!-- Main frame -->
                 <div
                     class="relative rounded-3xl overflow-hidden shadow-[0_24px_64px_rgba(255,70,145,0.2)] aspect-[4/5] bg-pink-bg">

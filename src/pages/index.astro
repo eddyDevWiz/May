@@ -82,19 +82,26 @@ const [products, collections] = await Promise.all([getProducts(8), getCollection
 
     <!-- Value props -->
     <section class="section bg-pink-bg">
-        <div class="container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+        <div class="container">
+            <div class="text-center mb-10 animate-fade-up">
+                <span class="eyebrow">{t.home.propsEyebrow}</span>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold text-neutral-800 mt-2 mb-3">{t.home.propsTitle}</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             {[
                 { icon: '🎨', title: t.home.propsTitle1, desc: t.home.propsSub1 },
                 { icon: '🚚', title: t.home.propsTitle2, desc: t.home.propsSub2 },
                 { icon: '✨', title: t.home.propsTitle3, desc: t.home.propsSub3 },
                 { icon: '💬', title: t.home.propsTitle4, desc: t.home.propsSub4 },
             ].map(({ icon, title, desc }) => (
-                <div class="px-4 py-8">
-                    <span class="text-4xl block mb-4">{icon}</span>
-                    <h3 class="font-heading text-base font-semibold text-neutral-800 mb-2">{title}</h3>
+                <div class="bg-white rounded-2xl border border-neutral-100 shadow-card px-6 py-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-hover">
+                    <span class="w-16 h-16 rounded-full bg-pink-bg flex items-center justify-center text-3xl mx-auto mb-5">{icon}</span>
+                    <h3 class="font-heading text-lg font-semibold text-neutral-800 mb-2">{title}</h3>
                     <p class="text-sm text-neutral-500 leading-relaxed">{desc}</p>
                 </div>
             ))}
+            </div>
         </div>
     </section>
 

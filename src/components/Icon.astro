@@ -1,0 +1,21 @@
+---
+// Abstract colour-shape marks (32x32 grid), drawn in currentColor with layered opacity.
+// Add shapes here as needed; each entry is [svg-fragment].
+const shapes = {
+    palette: `<circle cx="12" cy="16" r="9" opacity=".9"/><circle cx="21" cy="16" r="9" opacity=".45"/>`,
+    package: `<path d="M3 20a13 13 0 0 1 26 0z" opacity=".9"/><circle cx="16" cy="26" r="3.5" opacity=".45"/>`,
+    gem: `<rect x="5" y="5" width="22" height="22" rx="3" transform="rotate(45 16 16)" opacity=".45"/><rect x="10" y="10" width="12" height="12" rx="2" transform="rotate(45 16 16)" opacity=".9"/>`,
+    chat: `<path d="M4 28V16A12 12 0 0 1 16 4h12v0A12 12 0 0 1 16 16z" opacity=".9"/><circle cx="23" cy="23" r="5" opacity=".45"/>`,
+    leaf: `<path d="M5 27C5 14 14 5 27 5c0 13-9 22-22 22z" opacity=".9"/>`,
+    spark: `<circle cx="16" cy="16" r="5" opacity=".9"/><circle cx="16" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="2" opacity=".45"/>`,
+    heart: `<circle cx="11" cy="13" r="8" opacity=".9"/><circle cx="21" cy="19" r="8" opacity=".45"/>`
+} as const
+
+interface Props {
+    name: keyof typeof shapes
+    class?: string
+}
+const { name, class: className = 'w-5 h-5' } = Astro.props
+---
+
+<svg class={className} viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" set:html={shapes[name]} />

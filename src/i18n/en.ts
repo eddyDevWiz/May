@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from '../lib/site'
+
 import type { Translations } from './es';
 
 export const en: Translations = {
@@ -35,6 +37,8 @@ export const en: Translations = {
     ctaTitle:           'Let\'s create something beautiful together',
     ctaSub:             'I\'d be honored to transform your ideas into meaningful art. Tell me what you have in mind.',
     ctaBtn:             'Get in touch',
+    propsEyebrow: 'Why choose me',
+    propsTitle:   'Handmade, made for you',
     propsTitle1: 'Original Art',        propsSub1: 'Every piece is unique, handmade with artisan techniques.',
     propsTitle2: 'Nationwide Shipping', propsSub2: 'We ship across Colombia with special packaging to protect your art.',
     propsTitle3: 'Premium Quality',     propsSub3: 'Carefully selected materials so your artwork lasts a lifetime.',
@@ -96,7 +100,7 @@ export const en: Translations = {
     h2:       'Have a question?',
     p:        'Whether it\'s a custom piece, a shipping query or just to chat about art — I\'m available for you.',
     ctaBtn:   'Send',
-    email:              'hello@maygarcia.co',
+    email:              CONTACT_EMAIL,
     location:           'Colombia',
     hours:              'Mon–Sun 9:00–17:00',
     followMe:           'Follow me',
@@ -117,6 +121,8 @@ export const en: Translations = {
     sending:            'Sending…',
     note:               '* I reply within 24 hours on business days.',
     success:            'Message sent! I\'ll get back to you soon.',
+    error:              'Could not send your message. Please try again or email me directly.',
+    captcha:            'Please complete the verification before sending.',
   },
   cart: {
     title:    'Your cart',

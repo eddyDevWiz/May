@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from '../lib/site'
+
 export const es = {
   nav: {
     home:        'Inicio',
@@ -33,6 +35,8 @@ export const es = {
     ctaTitle:           'Creemos algo hermoso juntos',
     ctaSub:             'Estaría encantada de transformar tus ideas en arte significativo. Cuéntame qué tienes en mente.',
     ctaBtn:             'Contáctame',
+    propsEyebrow: 'Por qué elegirme',
+    propsTitle:   'Hecho a mano, pensado para ti',
     propsTitle1: 'Arte Original',     propsSub1: 'Cada obra es única, hecha a mano con técnicas artesanales.',
     propsTitle2: 'Envíos Nacionales', propsSub2: 'Enviamos a todo Colombia con empaque especial para proteger tu arte.',
     propsTitle3: 'Calidad Premium',   propsSub3: 'Materiales cuidadosamente seleccionados para que tu obra dure toda la vida.',
@@ -94,7 +98,7 @@ export const es = {
     h2:       '¿Tienes una pregunta?',
     p:        'Ya sea una obra personalizada, una consulta de envío o simplemente hablar de arte — estoy disponible para ti.',
     ctaBtn:   'Enviar',
-    email:              'hola@maygarcia.co',
+    email:              CONTACT_EMAIL,
     location:           'Colombia',
     hours:              'Lun–Dom 9:00–17:00',
     followMe:           'Sígueme',
@@ -115,6 +119,8 @@ export const es = {
     sending:            'Enviando…',
     note:               '* Respondo en menos de 24 horas en días hábiles.',
     success:            '¡Mensaje enviado! Te responderé pronto.',
+    error:              'No se pudo enviar el mensaje. Inténtalo de nuevo o escríbeme por email.',
+    captcha:            'Completa la verificación antes de enviar.',
   },
   cart: {
     title:    'Tu carrito',
