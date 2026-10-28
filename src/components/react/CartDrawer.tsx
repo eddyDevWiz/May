@@ -40,7 +40,7 @@ function CartLineItem({ line, onUpdate }: { line: CartLine; onUpdate: () => void
   return (
     <div className={`flex gap-3 py-4 border-b border-neutral-100 ${loading ? 'opacity-50 pointer-events-none' : ''}`}>
       {/* Image */}
-      <div className="w-18 h-18 flex-shrink-0 rounded-xl overflow-hidden bg-pink-bg">
+      <div className="w-[72px] h-[72px] flex-shrink-0 rounded-xl overflow-hidden bg-pink-bg">
         {img ? (
           <img src={img.url} alt={img.altText ?? ''} className="w-full h-full object-cover" width={72} height={72} loading="lazy" />
         ) : (
