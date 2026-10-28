@@ -69,6 +69,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     })
   })
 
-  if (!res.ok) return json({ error: 'send_failed' }, 502)
+  if (!res.ok) {
+    console.error('[contact] Resend rejected the email:', res.status, await res.text())
+    return json({ error: 'send_failed' }, 502)
+  }
   return json({ success: true })
 }
