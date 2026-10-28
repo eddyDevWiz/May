@@ -23,27 +23,29 @@ async function verifyTurnstile(token: string, ip: string | null) {
 }
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
-  let data: FormData
+  // JSON on purpose: Astro's checkOrigin blocks form-encoded cross-origin POSTs, and this
+  // public endpoint has no session to protect (Turnstile + honeypot cover abuse).
+  let data: Record<string, unknown>
   try {
-    data = await request.formData()
+    data = await request.json()
   } catch {
     return json({ error: 'invalid_request' }, 400)
   }
 
   // Honeypot: real people never tick this hidden box. Pretend success so bots don't retry.
-  if (data.get('botcheck')) return json({ success: true })
+  if (data['botcheck']) return json({ success: true })
 
-  const name = String(data.get('name') ?? '').trim()
-  const email = String(data.get('email') ?? '').trim()
-  const subject = String(data.get('subject') ?? '').trim()
-  const message = String(data.get('message') ?? '').trim()
+  const name = String(data['name'] ?? '').trim()
+  const email = String(data['email'] ?? '').trim()
+  const subject = String(data['subject'] ?? '').trim()
+  const message = String(data['message'] ?? '').trim()
 
   if (!name || !email || !subject || !message) return json({ error: 'missing_fields' }, 400)
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: 'invalid_email' }, 400)
   if (name.length > 200 || email.length > 200 || message.length > 5000) return json({ error: 'too_long' }, 400)
 
   if (import.meta.env.TURNSTILE_SECRET_KEY) {
-    const token = String(data.get('cf-turnstile-response') ?? '')
+    const token = String(data['cf-turnstile-response'] ?? '')
     if (!token || !(await verifyTurnstile(token, clientAddress ?? null))) {
       return json({ error: 'captcha_failed' }, 400)
     }

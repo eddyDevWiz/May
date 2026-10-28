@@ -136,7 +136,11 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
         btn.textContent = form.dataset.sending!
 
         try {
-            const res = await fetch('/api/contact', { method: 'POST', body: new FormData(form) })
+            const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.fromEntries(new FormData(form)))
+            })
             const data = await res.json()
             if (!res.ok || !data.success) throw new Error(data.error)
 
